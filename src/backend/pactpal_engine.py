@@ -207,11 +207,16 @@ class PactPalClearinghouseEngine:
         scenario_key: str = "b2b_gpu_inference_cluster",
         sla_outcome_mode: str | None = None,
         override_budget_cap_usd: float | None = None,
+        run_id: str | None = None,
     ) -> dict[str, Any]:
-        """Run the complete 5-Stage PactPal lifecycle across PayPal Sandbox APIs."""
+        """Run the complete 5-Stage PactPal lifecycle across PayPal Sandbox APIs.
+
+        run_id makes each demo run a distinct pact (fresh PayPal-Request-Ids); repeating a run_id
+        resumes it idempotently, which is how a run continues after buyer approval.
+        """
         scenarios = self.get_scenarios()
         scenario = scenarios.get(scenario_key, scenarios["b2b_gpu_inference_cluster"])
-        pact_id = scenario["pact_id"]
+        pact_id = f"{scenario['pact_id']}-{run_id}" if run_id else scenario["pact_id"]
         outcome_mode = sla_outcome_mode or scenario["default_sla_mode"]
         settled_usd = float(scenario["negotiated_price_usd"])
         budget_cap = float(override_budget_cap_usd) if override_budget_cap_usd is not None else float(scenario["buyer_max_budget_usd"])
@@ -344,6 +349,36 @@ class PactPalClearinghouseEngine:
         telemetry_log.append(ord_tel)
         order_id = ord_res["id"]
 
+        # Live Sandbox: the buyer must approve the order before funds can be authorized.
+        if self.client.is_live:
+            live_order, get_tel = self.client.invoke_sandbox_endpoint(
+                pact_id=pact_id,
+                api_family="Orders v2",
+                http_method="GET",
+                endpoint=f"/v2/checkout/orders/{order_id}",
+                agent_toolkit_tool="get_order",
+                payload={},
+                summary_template="Checked buyer approval for Order {id}",
+            )
+            telemetry_log.append(get_tel)
+            if live_order.get("status") != "APPROVED":
+                approve_url = next(
+                    (l["href"] for l in ord_res.get("links", []) if l.get("rel") in ("approve", "payer-action")), None
+                )
+                return {
+                    "pact_id": pact_id,
+                    "scenario_title": scenario["title"],
+                    "status": "AWAITING_BUYER_APPROVAL",
+                    "approve_url": approve_url,
+                    "negotiation_engine": negotiation_engine,
+                    "invoice_id": invoice_id,
+                    "order_id": order_id,
+                    "qr_code_svg_path": qr_res.get("qr_code_svg_path", "/api/qr/default.svg"),
+                    "mandate_verification": {"allowed": True, "reason": mandate_msg, "mandate": asdict(mandate)},
+                    "negotiation_turns": [asdict(t) for t in turns],
+                    "paypal_telemetry": [t.to_dict() for t in telemetry_log],
+                }
+
         # Call 5 [Orders v2 Authorize]: Lock buyer funds in PayPal Escrow Hold
         auth_res, auth_tel = self.client.invoke_sandbox_endpoint(
             pact_id=pact_id,
@@ -355,7 +390,10 @@ class PactPalClearinghouseEngine:
             summary_template=f"Locked Escrow Authorization Hold {{id}} (${settled_usd:.2f})",
         )
         telemetry_log.append(auth_tel)
-        auth_id = auth_res["id"]
+        live_auths = [
+            a for pu in auth_res.get("purchase_units", []) for a in pu.get("payments", {}).get("authorizations", [])
+        ]
+        auth_id = live_auths[0]["id"] if live_auths else auth_res["id"]
 
         # Call 6 [Shipment Tracking v1]: Register verifiable delivery & SLA artifact hash
         _, trk_tel = self.client.invoke_sandbox_endpoint(
@@ -365,9 +403,15 @@ class PactPalClearinghouseEngine:
             endpoint="/v1/shipping/trackers-batch",
             agent_toolkit_tool="create_shipment_tracking",
             payload={
-                "transaction_id": auth_id,
-                "status": "DELIVERED",
-                "carrier": "PACTPAL_TELEMETRY_ORACLE",
+                "trackers": [
+                    {
+                        "transaction_id": auth_id,
+                        "tracking_number": f"PACTPAL-{pact_id}",
+                        "status": "DELIVERED",
+                        "carrier": "OTHER",
+                        "carrier_name_other": "PactPal SLA Telemetry Oracle",
+                    }
+                ]
             },
             summary_template="Registered PayPal Delivery & SLA Telemetry Tracker {id}",
         )
@@ -407,7 +451,16 @@ class PactPalClearinghouseEngine:
                 agent_toolkit_tool="create_batch_payout",
                 payload={
                     "sender_batch_header": {"sender_batch_id": f"BATCH-{pact_id}", "email_subject": "PactPal Multiparty Settlement"},
-                    "items": [asdict(s) for s in payout_splits],
+                    "items": [
+                        {
+                            "recipient_type": "EMAIL",
+                            "receiver": s.receiver_email,
+                            "amount": {"currency": "USD", "value": f"{s.amount_usd:.2f}"},
+                            "note": s.note,
+                            "sender_item_id": f"{pact_id}-{i}",
+                        }
+                        for i, s in enumerate(payout_splits, 1)
+                    ],
                 },
                 summary_template="Executed 3-Way Multiparty Batch Payout {id}",
             )

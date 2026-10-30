@@ -42,11 +42,13 @@ async def execute_pact(
     scenario_key: str = Form("b2b_gpu_inference_cluster"),
     sla_outcome_mode: str = Form("amber_dispute"),
     override_budget_cap_usd: float | None = Form(None),
+    run_id: str | None = Form(None),
 ) -> JSONResponse:
     result: dict[str, Any] = engine.execute_pact_lifecycle(
         scenario_key=scenario_key,
         sla_outcome_mode=sla_outcome_mode,
         override_budget_cap_usd=override_budget_cap_usd,
+        run_id=run_id,
     )
     return JSONResponse(result)
 

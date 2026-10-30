@@ -78,6 +78,10 @@ class PayPalSandboxClient:
         raw = f"{pact_id}::{endpoint}::{canonical}".encode("utf-8")
         return hashlib.sha256(raw).hexdigest()[:36]
 
+    @property
+    def is_live(self) -> bool:
+        return self.mode != "mock" and bool(self.client_id and self.client_secret)
+
     def get_oauth_token(self) -> str:
         """Obtain or refresh a PayPal Sandbox OAuth2 Bearer token (/v1/oauth2/token)."""
         now = time.time()
@@ -123,7 +127,8 @@ class PayPalSandboxClient:
         request_id = self.build_idempotency_key(pact_id, endpoint, payload)
 
         # 1. Check SHA-256 Vault in hybrid or mock mode
-        if self.mode in ("hybrid", "mock") and request_id in self._vault:
+        # GETs read live state (e.g. buyer approval), so they are never served from the vault.
+        if self.mode in ("hybrid", "mock") and http_method.upper() != "GET" and request_id in self._vault:
             cached = self._vault[request_id]
             elapsed = (time.perf_counter() - t0) * 1000.0
             telemetry = PayPalApiCallTelemetry(
@@ -302,7 +307,7 @@ class PayPalSandboxClient:
             trk_id = f"TRK-{short[:8]}"
             return {
                 "id": trk_id,
-                "tracker_identifiers": [{"transaction_id": payload.get("transaction_id"), "tracking_number": trk_id}],
+                "tracker_identifiers": [{"transaction_id": t.get("transaction_id"), "tracking_number": trk_id} for t in payload.get("trackers", [])],
                 "status": "DELIVERED",
                 "_http_status": 200,
             }

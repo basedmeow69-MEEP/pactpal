@@ -99,6 +99,7 @@
 
   <script>
     let gridApi = null;
+    let currentRun = null;
     const esc = v => String(v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
     function renderTurns(turns) {
@@ -141,17 +142,30 @@
       runPact("amber_dispute");
     });
 
-    async function runPact(mode) {
+    async function runPact(mode, resume = false) {
       const scenarioKey = document.getElementById("scenarioSelect").value;
+      if (!resume) currentRun = { mode, scenarioKey, runId: Date.now().toString(36) };
       const form = new FormData();
-      form.append("scenario_key", scenarioKey);
-      form.append("sla_outcome_mode", mode);
+      form.append("scenario_key", currentRun.scenarioKey);
+      form.append("sla_outcome_mode", currentRun.mode);
+      form.append("run_id", currentRun.runId);
 
       const res = await fetch("/api/execute-pact", { method: "POST", body: form });
       const data = await res.json();
       document.getElementById("engineBadge").textContent = `Negotiation engine: ${data.negotiation_engine || "--"}`;
       gridApi.setGridOption("rowData", data.paypal_telemetry || []);
       document.getElementById("kpiStatus").textContent = data.status;
+      if (data.status === "AWAITING_BUYER_APPROVAL") {
+        document.getElementById("kpiStatus").className = "text-lg font-bold text-amber-400 mt-1";
+        document.getElementById("kpiInvoiceId").textContent = `Invoice: ${data.invoice_id} | Order: ${data.order_id}`;
+        renderTurns(data.negotiation_turns);
+        document.getElementById("courtroomBox").innerHTML = `
+          <div class="text-amber-400 font-bold">LIVE SANDBOX :: BUYER APPROVAL REQUIRED</div>
+          <div>PayPal holds funds only after the buyer approves order ${esc(data.order_id)}.</div>
+          <a href="${esc(data.approve_url)}" target="_blank" rel="noopener" class="inline-block mt-2 px-3 py-1.5 rounded bg-sky-600 text-white">1. Approve as Sandbox buyer</a>
+          <button onclick="runPact(null, true)" class="ml-2 mt-2 px-3 py-1.5 rounded bg-emerald-600 text-white">2. Continue pact</button>`;
+        return;
+      }
       if (data.status === "HALTED_ON_PAYPAL_SANDBOX_ERROR" || data.status === "BLOCKED_BY_SPEND_MANDATE_GUARDRAIL") {
         const reason = data.error ? `HTTP ${data.error.http_status} at ${data.error.endpoint}` : data.mandate_verification.reason;
         document.getElementById("kpiStatus").className = "text-lg font-bold text-rose-400 mt-1";
