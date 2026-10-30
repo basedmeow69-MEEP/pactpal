@@ -114,6 +114,7 @@ class PayPalApiCallTelemetry:
     latency_ms: float
     summary: str
     raw_Preview: dict[str, Any] = field(default_factory=dict)
+    source: str = "SIMULATED"  # LIVE SANDBOX | SIMULATED | VAULT REPLAY (...)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

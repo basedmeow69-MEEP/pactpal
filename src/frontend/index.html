@@ -29,6 +29,9 @@
       <button onclick="runPact('amber_dispute')" class="bg-amber-600 hover:bg-amber-500 text-white font-semibold px-4 py-2 rounded-lg text-sm transition">
         Run Path B: SLA Breach (76% &rarr; AI Dispute Courtroom)
       </button>
+      <button onclick="runPact('red_void')" class="bg-rose-700 hover:bg-rose-600 text-white font-semibold px-4 py-2 rounded-lg text-sm transition">
+        Run Path C: SLA Failure (41% &rarr; Void Hold)
+      </button>
     </div>
   </header>
 
@@ -61,7 +64,10 @@
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
         <div class="flex items-center justify-between">
-          <h2 class="text-base font-bold text-white">1. A2A Nash Bargaining &amp; Sandbox Dispute Courtroom</h2>
+          <div>
+            <h2 class="text-base font-bold text-white">1. A2A Nash Bargaining &amp; Sandbox Dispute Courtroom</h2>
+            <span id="engineBadge" class="text-xs font-mono text-violet-300">Negotiation engine: --</span>
+          </div>
           <img id="qrBadge" src="/api/qr/INIT.svg" alt="PayPal Invoice QR" class="w-14 h-14 rounded border border-slate-700" />
         </div>
         <div id="negotiationFeed" class="space-y-2.5 text-sm"></div>
@@ -77,6 +83,10 @@
           <span class="text-xs font-mono px-2 py-1 rounded bg-sky-500/10 text-sky-300 border border-sky-500/30">APIMatic Schema Validated</span>
         </div>
         <div id="myGrid" class="ag-theme-quartz-dark w-full h-96 rounded-lg overflow-hidden"></div>
+        <div class="mt-3">
+          <div class="text-xs text-slate-400 font-mono mb-1">Raw PayPal response (click a ledger row): <span id="jsonTitle" class="text-sky-300">--</span></div>
+          <pre id="jsonDrawer" class="max-h-64 overflow-auto rounded-lg bg-slate-950 border border-slate-800 p-3 text-xs font-mono text-slate-300 whitespace-pre-wrap"></pre>
+        </div>
       </div>
     </section>
 
@@ -89,11 +99,28 @@
 
   <script>
     let gridApi = null;
+    const esc = v => String(v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+    function renderTurns(turns) {
+      document.getElementById("negotiationFeed").innerHTML = turns.map(t => `
+        <div class="p-3 rounded-lg bg-slate-950/90 border border-slate-800">
+          <div class="flex justify-between text-xs font-mono text-sky-400">
+            <span>Round ${t.round_num} :: ${esc(t.speaker_agent)}</span>
+            <span>$${t.proposed_price_usd.toFixed(2)} (${t.early_discount_pct}% early rule)</span>
+          </div>
+          <p class="text-slate-300 text-xs mt-1">${esc(t.rationale)}</p>
+        </div>
+      `).join("");
+    }
     const columnDefs = [
       { field: "step_order", headerName: "#", width: 60 },
       { field: "api_family", headerName: "PayPal API Family", width: 175 },
       { field: "agent_toolkit_tool", headerName: "Agent Toolkit / MCP Tool", width: 190 },
       { field: "resource_id", headerName: "Sandbox Resource ID", width: 165 },
+      { field: "source", headerName: "Source", width: 170,
+        cellStyle: p => ({ color: p.value === "LIVE SANDBOX" ? "#34d399" : "#fbbf24" }) },
+      { field: "status_code", headerName: "HTTP", width: 80,
+        cellStyle: p => ({ color: p.value >= 400 ? "#f87171" : "#cbd5e1" }) },
       { field: "latency_ms", headerName: "Latency (ms)", width: 120, type: "rightAligned" },
       { field: "summary", headerName: "Execution Outcome", flex: 1, minWidth: 260 }
     ];
@@ -104,7 +131,12 @@
         columnDefs,
         rowData: [],
         animateRows: true,
-        defaultColDef: { sortable: true, filter: true, resizable: true }
+        defaultColDef: { sortable: true, filter: true, resizable: true },
+        rowSelection: "single",
+        onRowClicked: e => {
+          document.getElementById("jsonTitle").textContent = `#${e.data.step_order} ${e.data.http_method} ${e.data.endpoint} · PayPal-Request-Id ${e.data.paypal_request_id}`;
+          document.getElementById("jsonDrawer").textContent = JSON.stringify(e.data.raw_Preview, null, 2);
+        }
       });
       runPact("amber_dispute");
     });
@@ -117,8 +149,19 @@
 
       const res = await fetch("/api/execute-pact", { method: "POST", body: form });
       const data = await res.json();
-
+      document.getElementById("engineBadge").textContent = `Negotiation engine: ${data.negotiation_engine || "--"}`;
+      gridApi.setGridOption("rowData", data.paypal_telemetry || []);
       document.getElementById("kpiStatus").textContent = data.status;
+      if (data.status === "HALTED_ON_PAYPAL_SANDBOX_ERROR" || data.status === "BLOCKED_BY_SPEND_MANDATE_GUARDRAIL") {
+        const reason = data.error ? `HTTP ${data.error.http_status} at ${data.error.endpoint}` : data.mandate_verification.reason;
+        document.getElementById("kpiStatus").className = "text-lg font-bold text-rose-400 mt-1";
+        document.getElementById("courtroomBox").innerHTML = `<div class="text-rose-400 font-bold">${esc(data.status)}</div><div>${esc(reason)}</div>`;
+        document.getElementById("jsonDrawer").textContent = JSON.stringify(data.error || data.mandate_verification, null, 2);
+        renderTurns(data.negotiation_turns || []);
+        return;
+      }
+      document.getElementById("kpiStatus").className = "text-lg font-bold text-sky-400 mt-1";
+
       document.getElementById("kpiInvoiceId").textContent = `Invoice: ${data.invoice_id} | Order: ${data.order_id}`;
       document.getElementById("kpiEscrow").textContent = `$${data.financial_summary.negotiated_invoice_usd.toFixed(2)}`;
       document.getElementById("kpiSla").textContent = `${data.sla_verdict.overall_sla_score.toFixed(1)}%`;
@@ -127,19 +170,16 @@
       document.getElementById("kpiNet").textContent = `Net Merchant Settlement: $${data.financial_summary.final_net_settled_usd.toFixed(2)}`;
       document.getElementById("qrBadge").src = data.qr_code_svg_path;
 
-      const feed = document.getElementById("negotiationFeed");
-      feed.innerHTML = data.negotiation_turns.map(t => `
-        <div class="p-3 rounded-lg bg-slate-950/90 border border-slate-800">
-          <div class="flex justify-between text-xs font-mono text-sky-400">
-            <span>Round ${t.round_num} :: ${t.speaker_agent}</span>
-            <span>$${t.proposed_price_usd.toFixed(2)} (${t.early_discount_pct}% early rule)</span>
-          </div>
-          <p class="text-slate-300 text-xs mt-1">${t.rationale}</p>
-        </div>
-      `).join("");
+      renderTurns(data.negotiation_turns);
 
       const court = document.getElementById("courtroomBox");
-      if (data.dispute_courtroom) {
+      if (data.status === "VOIDED_SLA_FAILURE_FULL_BUYER_REFUND") {
+        court.innerHTML = `
+          <div class="text-rose-400 font-bold">RED ZONE :: AUTHORIZATION VOIDED, INVOICE CANCELLED</div>
+          ${data.sla_verdict.checks_failed.map(c => `<div>• ${esc(c)}</div>`).join("")}
+          <div class="text-emerald-400">Buyer keeps $${data.financial_summary.negotiated_invoice_usd.toFixed(2)}; nothing captured.</div>
+        `;
+      } else if (data.dispute_courtroom) {
         const dc = data.dispute_courtroom;
         court.innerHTML = `
           <div class="text-amber-400 font-bold">SANDBOX DISPUTE COURTROOM ACTIVE :: ${dc.dispute_id}</div>
@@ -154,7 +194,6 @@
         `;
       }
 
-      gridApi.setGridOption("rowData", data.paypal_telemetry);
 
       const timeline = document.getElementById("timelineBar");
       timeline.innerHTML = [

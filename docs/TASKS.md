@@ -24,6 +24,8 @@ Project started 2026-10-30 from docs/BLUEPRINT_SOURCE.md. Airlock (Hackathons re
 
 ## Log
 
+- 2026-10-30: Added Claude buyer/seller agents (claude-opus-5-5, mandate-clamped), red void path, live-error halt (no simulated substitution), Source column + raw JSON drawer, Devpost draft. 10/10 tests pass; three paths verified through the server.
+
 - 2026-10-30: Implemented blueprint Steps 1–7 as written (src/apimatic_sdk, src/backend, src/frontend, tests, render.yaml). 3/3 tests pass; server verified: Path A, Path B, mandate block, QR, MCP tool list.
 
 - 2026-10-30: Official rules checked; sponsor target set to AG Grid; Nov 5 reclassified as self-imposed.

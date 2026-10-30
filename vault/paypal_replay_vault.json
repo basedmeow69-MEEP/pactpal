@@ -188,5 +188,219 @@
       "value": "93.60"
     },
     "_http_status": 200
+  },
+  "edcd42bb819e227f01c9942eb214bb54f75d": {
+    "id": "INV2-EDCD-42BB-8192",
+    "status": "SENT",
+    "detail": {
+      "currency_code": "USD",
+      "note": "PactPal A2A Contract PACT-2026-DERM-02"
+    },
+    "invoicer": {
+      "email_address": "orders@atelier-vera-luxury.sandbox.paypal.com"
+    },
+    "amount": {
+      "currency_code": "USD",
+      "value": "372.00"
+    },
+    "configuration": {
+      "allow_tip": false,
+      "pay_by_bank": true
+    },
+    "links": [
+      {
+        "rel": "self",
+        "href": "https://api-m.sandbox.paypal.com/v2/invoicing/invoices/INV2-EDCD-42BB-8192"
+      },
+      {
+        "rel": "payer-view",
+        "href": "https://www.sandbox.paypal.com/invoice/p/#INV2EDCD42BB8192"
+      }
+    ],
+    "_http_status": 201,
+    "_source": "SIMULATED"
+  },
+  "c61048ab8675f9ccb9288d7e712d2ac07d61": {
+    "id": "CRULE-C61048AB86",
+    "status": "ACTIVE",
+    "rule_type": "EARLY_PAYMENT_AND_SLA_ESCROW_RULE",
+    "discount_percent": 6.0,
+    "trigger_condition": "SLA_SCORE_GE_90_WITHIN_24H",
+    "_http_status": 201,
+    "_source": "SIMULATED"
+  },
+  "b1bdbf8f1b2876951726423d1cd87a0e4d94": {
+    "id": "QR-B1BDBF8F1B",
+    "qr_code_svg_path": "/api/qr/B1BDBF8F1B.svg",
+    "width": 300,
+    "height": 300,
+    "action": "pay",
+    "_http_status": 200,
+    "_source": "SIMULATED"
+  },
+  "589a539669851e73efa8c34a82b049f48f9d": {
+    "id": "5O190127TN589A539",
+    "intent": "AUTHORIZE",
+    "status": "CREATED",
+    "purchase_units": [
+      {
+        "reference_id": "PACT-2026-DERM-02",
+        "custom_id": "MND-PACT-2026-DERM-02",
+        "amount": {
+          "currency_code": "USD",
+          "value": "372.00"
+        }
+      }
+    ],
+    "links": [
+      {
+        "rel": "self",
+        "href": "https://api-m.sandbox.paypal.com/v2/checkout/orders/5O190127TN589A539"
+      },
+      {
+        "rel": "approve",
+        "href": "https://www.sandbox.paypal.com/checkoutnow?token=5O190127TN589A539"
+      },
+      {
+        "rel": "authorize",
+        "href": "https://api-m.sandbox.paypal.com/v2/checkout/orders/5O190127TN589A539/authorize"
+      }
+    ],
+    "_http_status": 201,
+    "_source": "SIMULATED"
+  },
+  "6bca60efa4dba5f100efb1b7d0452779cd54": {
+    "id": "0VF528149376BCA60",
+    "status": "AUTHORIZED",
+    "expiration_time": "2026-11-29T23:59:59Z",
+    "seller_protection": {
+      "status": "ELIGIBLE"
+    },
+    "_http_status": 201,
+    "_source": "SIMULATED"
+  },
+  "077b1367e9a1b5db5ebc92763274f3254461": {
+    "id": "TRK-077B1367",
+    "tracker_identifiers": [
+      {
+        "transaction_id": "0VF528149376BCA60",
+        "tracking_number": "TRK-077B1367"
+      }
+    ],
+    "status": "DELIVERED",
+    "_http_status": 200,
+    "_source": "SIMULATED"
+  },
+  "97cf64fb953ba0627d44fa1aa6283d637caf": {
+    "id": "2GG903537H97CF64F",
+    "status": "COMPLETED",
+    "final_capture": true,
+    "amount": {
+      "currency_code": "USD",
+      "value": "372.00"
+    },
+    "seller_receivable_breakdown": {
+      "gross_amount": {
+        "currency_code": "USD",
+        "value": "372.00"
+      },
+      "paypal_fee": {
+        "currency_code": "USD",
+        "value": "4.89"
+      }
+    },
+    "_http_status": 201,
+    "_source": "SIMULATED"
+  },
+  "c7d297a51fb1ccea47fa3448008c5db48288": {
+    "id": "PAYOUTBATCH-C7D297A51F",
+    "batch_header": {
+      "payout_batch_id": "PAYOUTBATCH-C7D297A51F",
+      "batch_status": "SUCCESS",
+      "sender_batch_header": {
+        "sender_batch_id": "BATCH-PACT-2026-DERM-02",
+        "email_subject": "PactPal Multiparty Settlement"
+      }
+    },
+    "items_count": 3,
+    "items": [
+      {
+        "role": "Primary Merchant (75%)",
+        "receiver_email": "orders@atelier-vera-luxury.sandbox.paypal.com",
+        "split_percent": 75.0,
+        "amount_usd": 279.0,
+        "note": "Primary SLA settlement"
+      },
+      {
+        "role": "Sub-Agent Fulfillment (20%)",
+        "receiver_email": "formulation@aura-labs-derm.sandbox.paypal.com",
+        "split_percent": 20.0,
+        "amount_usd": 74.4,
+        "note": "Autonomous verifier & compute split"
+      },
+      {
+        "role": "Guild Referral Partner (5%)",
+        "receiver_email": "vto-royalty@lumen-jewelry.sandbox.paypal.com",
+        "split_percent": 5.0,
+        "amount_usd": 18.6,
+        "note": "Clearinghouse royalty"
+      }
+    ],
+    "_http_status": 201,
+    "_source": "SIMULATED"
+  },
+  "1d5e5c6c0e3fc5e4fa86d7a0f5673ce05891": {
+    "id": "PP-D-1D5E5C",
+    "dispute_id": "PP-D-1D5E5C",
+    "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
+    "status": "WAITING_FOR_SELLER_RESPONSE",
+    "dispute_state": "REQUIRED_ACTION",
+    "dispute_life_cycle_stage": "INQUIRY",
+    "sandbox_trigger": "require-evidence",
+    "_http_status": 200,
+    "_source": "SIMULATED"
+  },
+  "14909a2c67706578387e2ced82d209b9ee39": {
+    "id": "EVID-14909A2C",
+    "status": "EVIDENCE_SUBMITTED",
+    "evidence_type": "PROOF_OF_FULFILLMENT_AND_SLA_TELEMETRY",
+    "_http_status": 200,
+    "_source": "SIMULATED"
+  },
+  "9b55f57d26165e952b030f561fa41f93cab5": {
+    "id": "OFFER-9B55F57D",
+    "status": "OFFER_PROPOSED",
+    "offer_type": "REFUND",
+    "offer_amount": {
+      "currency_code": "USD",
+      "value": "89.28"
+    },
+    "note": "Autonomous Seller Defense AI proposes 24% Partial-Cure Credit ($89.28 refund; $282.72 net capture) matching exact SLA defect ratio.",
+    "_http_status": 200,
+    "_source": "SIMULATED"
+  },
+  "b9e980df431a910d9630964169612b531dca": {
+    "id": "RESOLVED-B9E980DF",
+    "status": "RESOLVED",
+    "dispute_outcome": "RESOLVED_PARTIAL_CURE_SETTLEMENT",
+    "adjudication_mode": "SANDBOX_AUTONOMOUS_COURTROOM",
+    "settled_refund_amount": {
+      "currency_code": "USD",
+      "value": "89.28"
+    },
+    "_http_status": 200,
+    "_source": "SIMULATED"
+  },
+  "5ad79a5cf066dd2b13bd89cf890713b20249": {
+    "id": "VOID-5AD79A5C",
+    "status": "VOIDED",
+    "_http_status": 204,
+    "_source": "SIMULATED"
+  },
+  "c11037114e2b901ba00080c43705ce214962": {
+    "id": "CANCEL-C1103711",
+    "status": "CANCELLED",
+    "_http_status": 204,
+    "_source": "SIMULATED"
   }
 }

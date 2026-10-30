@@ -10,7 +10,8 @@ from src.apimatic_sdk.models import (
     PayoutRecipientSplit,
     SpendMandateToken,
 )
-from src.backend.paypal_sandbox_client import PayPalSandboxClient
+from src.backend.negotiation_agents import CLAUDE_MODEL, claude_available, run_claude_negotiation
+from src.backend.paypal_sandbox_client import PayPalSandboxClient, PayPalSandboxError
 
 
 @dataclass
@@ -38,8 +39,23 @@ class SlaAuditVerdict:
 class PactPalClearinghouseEngine:
     """Orchestrates A2A Negotiation, PayPal Conditional Invoicing, Escrow, Payouts & Disputes."""
 
-    def __init__(self, client: PayPalSandboxClient | None = None) -> None:
+    def __init__(self, client: PayPalSandboxClient | None = None, use_claude_agents: bool | None = None) -> None:
         self.client = client or PayPalSandboxClient()
+        self.use_claude_agents = claude_available() if use_claude_agents is None else use_claude_agents
+
+    @staticmethod
+    def scale_line_items(items: list[dict[str, Any]], total_usd: float) -> list[dict[str, Any]]:
+        """Rescale line items so the invoice total matches the negotiated price to the cent."""
+        values = [float(i["unit_amount"]["value"]) * int(i["quantity"]) for i in items]
+        base = sum(values)
+        if abs(base - total_usd) < 0.005:
+            return items
+        scaled = [round(v * total_usd / base, 2) for v in values]
+        scaled[-1] = round(total_usd - sum(scaled[:-1]), 2)
+        return [
+            {**item, "unit_amount": {**item["unit_amount"], "value": f"{v / int(item['quantity']):.2f}"}}
+            for item, v in zip(items, scaled)
+        ]
 
     @staticmethod
     def get_scenarios() -> dict[str, dict[str, Any]]:
@@ -152,6 +168,20 @@ class PactPalClearinghouseEngine:
                 net_merchant_capture_usd=round(total_usd, 2),
             )
 
+        if simulation_mode == "red_void":
+            return SlaAuditVerdict(
+                overall_sla_score=41.0,
+                epistemic_zone="RED_AUTO_VOID",
+                checks_passed=["Tracking payload received via PayPal Tracker API"],
+                checks_failed=[
+                    "SLA Breach #1: Deliverable failed 29 of 50 validation items (58% defect ratio)",
+                    "SLA Breach #2: Delivery landed 31h after the contracted 24h window",
+                ],
+                defect_ratio=1.0,
+                recommended_partial_refund_usd=round(total_usd, 2),
+                net_merchant_capture_usd=0.0,
+            )
+
         # Amber Dispute Mode: Partial SLA breach (76.0% score -> 24% mathematical partial-cure offer)
         defect_ratio = 0.24
         refund_usd = round(total_usd * defect_ratio, 2)
@@ -186,8 +216,16 @@ class PactPalClearinghouseEngine:
         settled_usd = float(scenario["negotiated_price_usd"])
         budget_cap = float(override_budget_cap_usd) if override_budget_cap_usd is not None else float(scenario["buyer_max_budget_usd"])
 
-        # Stage 1: A2A Nash Negotiation
+        # Stage 1: A2A Nash Negotiation (Claude buyer/seller agents when an Anthropic key is configured)
         turns, cond_rule = self.run_nash_negotiation(scenario)
+        negotiation_engine = "scripted (set ANTHROPIC_API_KEY for Claude agents)"
+        ai_deal = run_claude_negotiation({**scenario, "buyer_max_budget_usd": budget_cap}) if self.use_claude_agents else None
+        if ai_deal:
+            settled_usd = ai_deal["price_usd"]
+            turns = [NegotiationTurn(**t) for t in ai_deal["turns"]]
+            cond_rule.discount_percent = ai_deal["early_discount_pct"]
+            negotiation_engine = CLAUDE_MODEL
+        line_items = self.scale_line_items(scenario["line_items"], settled_usd)
 
         # Stage 2: Mint & Verify Cryptographic SpendMandateToken
         mandate = SpendMandateToken.issue(
@@ -202,12 +240,45 @@ class PactPalClearinghouseEngine:
             return {
                 "pact_id": pact_id,
                 "status": "BLOCKED_BY_SPEND_MANDATE_GUARDRAIL",
+                "negotiation_engine": negotiation_engine,
                 "mandate_verification": {"allowed": False, "reason": mandate_msg, "mandate": asdict(mandate)},
                 "negotiation_turns": [asdict(t) for t in turns],
                 "paypal_telemetry": [],
             }
 
         telemetry_log: list[PayPalApiCallTelemetry] = []
+        try:
+            return self._run_paypal_stages(
+                scenario, pact_id, outcome_mode, settled_usd, line_items, turns, cond_rule,
+                mandate, mandate_msg, negotiation_engine, telemetry_log,
+            )
+        except PayPalSandboxError as exc:
+            telemetry_log.append(exc.telemetry)
+            return {
+                "pact_id": pact_id,
+                "scenario_title": scenario["title"],
+                "status": "HALTED_ON_PAYPAL_SANDBOX_ERROR",
+                "error": {"endpoint": exc.telemetry.endpoint, "http_status": exc.status, "paypal_response": exc.body},
+                "negotiation_engine": negotiation_engine,
+                "mandate_verification": {"allowed": True, "reason": mandate_msg, "mandate": asdict(mandate)},
+                "negotiation_turns": [asdict(t) for t in turns],
+                "paypal_telemetry": [t.to_dict() for t in telemetry_log],
+            }
+
+    def _run_paypal_stages(
+        self,
+        scenario: dict[str, Any],
+        pact_id: str,
+        outcome_mode: str,
+        settled_usd: float,
+        line_items: list[dict[str, Any]],
+        turns: list[NegotiationTurn],
+        cond_rule: InvoiceConditionalRuleSpec,
+        mandate: SpendMandateToken,
+        mandate_msg: str,
+        negotiation_engine: str,
+        telemetry_log: list[PayPalApiCallTelemetry],
+    ) -> dict[str, Any]:
 
         # Call 1 [Invoices v2]: Create Draft & Send Invoice with PAY_BY_BANK
         inv_res, inv_tel = self.client.invoke_sandbox_endpoint(
@@ -219,7 +290,7 @@ class PactPalClearinghouseEngine:
             payload={
                 "detail": {"currency_code": "USD", "note": f"PactPal A2A Contract {pact_id}"},
                 "invoicer": {"email_address": scenario["merchant_email"]},
-                "items": scenario["line_items"],
+                "items": line_items,
                 "amount": {"currency_code": "USD", "value": f"{settled_usd:.2f}"},
             },
             summary_template="Created PayPal Sandbox Invoice {id} with PAY_BY_BANK enabled",
@@ -343,6 +414,30 @@ class PactPalClearinghouseEngine:
             telemetry_log.append(pay_tel)
             final_status = "SETTLED_FULL_SLA_PAYOUT"
 
+        elif verdict.epistemic_zone == "RED_AUTO_VOID":
+            # Stage 4C: Void the escrow hold and cancel the invoice; buyer keeps 100% of funds
+            _, void_tel = self.client.invoke_sandbox_endpoint(
+                pact_id=pact_id,
+                api_family="Payments v2 Void",
+                http_method="POST",
+                endpoint=f"/v2/payments/authorizations/{auth_id}/void",
+                agent_toolkit_tool="void_authorization",
+                payload={},
+                summary_template=f"Voided Escrow Authorization {auth_id}: ${settled_usd:.2f} released to buyer",
+            )
+            telemetry_log.append(void_tel)
+            _, cancel_tel = self.client.invoke_sandbox_endpoint(
+                pact_id=pact_id,
+                api_family="Invoices v2 Cancel",
+                http_method="POST",
+                endpoint=f"/v2/invoicing/invoices/{invoice_id}/cancel",
+                agent_toolkit_tool="cancel_sent_invoice",
+                payload={"subject": f"PactPal {pact_id} voided", "note": "; ".join(verdict.checks_failed), "send_to_invoicer": True},
+                summary_template=f"Cancelled Invoice {invoice_id} after SLA failure",
+            )
+            telemetry_log.append(cancel_tel)
+            final_status = "VOIDED_SLA_FAILURE_FULL_BUYER_REFUND"
+
         else:
             # Stage 4B: Autonomous Sandbox Dispute Courtroom & Partial-Cure Settlement
             disp_res, disp_tel = self.client.invoke_sandbox_endpoint(
@@ -421,6 +516,7 @@ class PactPalClearinghouseEngine:
             "pact_id": pact_id,
             "scenario_title": scenario["title"],
             "status": final_status,
+            "negotiation_engine": negotiation_engine,
             "financial_summary": {
                 "initial_ask_usd": scenario["initial_ask_usd"],
                 "negotiated_invoice_usd": settled_usd,

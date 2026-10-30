@@ -29,6 +29,16 @@ PAYPAL_MODE = os.environ.get("PAYPAL_MODE", "hybrid").lower()  # "mock" | "hybri
 VAULT_FILE = Path(os.environ.get("PAYPAL_VAULT_PATH", "vault/paypal_replay_vault.json"))
 
 
+class PayPalSandboxError(Exception):
+    """A live Sandbox call failed. Carries PayPal's real response so the UI shows the failure."""
+
+    def __init__(self, status: int, body: Any, telemetry: PayPalApiCallTelemetry) -> None:
+        super().__init__(f"PayPal Sandbox returned HTTP {status} for {telemetry.endpoint}")
+        self.status = status
+        self.body = body
+        self.telemetry = telemetry
+
+
 class PayPalSandboxClient:
     """Resilient PayPal Sandbox REST client with SHA-256 replay vault and idempotency."""
 
@@ -128,6 +138,7 @@ class PayPalSandboxClient:
                 cache_hit=True,
                 latency_ms=round(elapsed, 2),
                 summary=summary_template.format(id=cached.get("id", "")),
+                source=f"VAULT REPLAY ({cached.get('_source', 'SIMULATED')})",
                 raw_Preview=cached,
             )
             return cached, telemetry
@@ -135,6 +146,7 @@ class PayPalSandboxClient:
         # 2. Deterministic Sandbox schema synthesis if in mock mode or no live keys injected
         if self.mode == "mock" or not (self.client_id and self.client_secret):
             simulated = self._simulate_paypal_sandbox_response(endpoint, payload, request_id)
+            simulated["_source"] = "SIMULATED"
             self._vault[request_id] = simulated
             self._save_vault()
             elapsed = (time.perf_counter() - t0) * 1000.0
@@ -150,6 +162,7 @@ class PayPalSandboxClient:
                 cache_hit=False,
                 latency_ms=round(elapsed, 2),
                 summary=summary_template.format(id=simulated["id"]),
+                source="SIMULATED",
                 raw_Preview=simulated,
             )
             return simulated, telemetry
@@ -170,11 +183,31 @@ class PayPalSandboxClient:
                 raw_bytes = resp.read()
                 body = json.loads(raw_bytes.decode("utf-8")) if raw_bytes else {"status": "COMPLETED"}
                 body["_http_status"] = resp.status
+                body["_source"] = "LIVE SANDBOX"
                 body.setdefault("id", f"PP-{request_id[:10].upper()}")
         except urllib.error.HTTPError as exc:
-            # Graceful fallback to deterministic Sandbox payload if Sandbox endpoint requires special partner flag
-            body = self._simulate_paypal_sandbox_response(endpoint, payload, request_id)
-            body["_sandbox_fallback_reason"] = f"HTTP {exc.code}"
+            # Never substitute simulated data for a failed live call: surface PayPal's real error.
+            raw = exc.read().decode("utf-8", errors="replace")
+            try:
+                error_body: Any = json.loads(raw)
+            except ValueError:
+                error_body = raw
+            telemetry = PayPalApiCallTelemetry(
+                step_order=self._call_counter,
+                api_family=api_family,
+                http_method=http_method,
+                endpoint=endpoint,
+                agent_toolkit_tool=agent_toolkit_tool,
+                paypal_request_id=request_id,
+                resource_id="FAILED",
+                status_code=exc.code,
+                cache_hit=False,
+                latency_ms=round((time.perf_counter() - t0) * 1000.0, 2),
+                summary=f"FAILED: PayPal Sandbox returned HTTP {exc.code}",
+                raw_Preview=error_body if isinstance(error_body, dict) else {"body": error_body},
+                source="LIVE SANDBOX",
+            )
+            raise PayPalSandboxError(exc.code, error_body, telemetry) from exc
 
         self._vault[request_id] = body
         self._save_vault()
@@ -192,6 +225,7 @@ class PayPalSandboxClient:
             latency_ms=round(elapsed, 2),
             summary=summary_template.format(id=body["id"]),
             raw_Preview=body,
+            source="LIVE SANDBOX",
         )
         return body, telemetry
 
@@ -272,6 +306,12 @@ class PayPalSandboxClient:
                 "status": "DELIVERED",
                 "_http_status": 200,
             }
+
+        if endpoint.endswith("/void"):
+            return {"id": f"VOID-{short[:8]}", "status": "VOIDED", "_http_status": 204}
+
+        if endpoint.endswith("/cancel"):
+            return {"id": f"CANCEL-{short[:8]}", "status": "CANCELLED", "_http_status": 204}
 
         if endpoint.endswith("/capture"):
             cap_id = f"2GG903537H{short[:7]}"
