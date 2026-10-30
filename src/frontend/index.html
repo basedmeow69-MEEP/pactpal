@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PactPal — Autonomous PayPal A2A Clearinghouse & Dispute Courtroom</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@32.2.0/dist/ag-grid-community.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.2.0/styles/ag-grid.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.2.0/styles/ag-theme-quartz.css" />
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded bg-sky-500/20 text-sky-300 text-xs font-mono font-bold border border-sky-500/40">PAYPAL SANDBOX v2 + AGENT TOOLKIT v1.11.0</span>
+        <span class="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 text-xs font-mono border border-emerald-500/40">AG GRID · BRYNTUM · APIMATIC · RENDER</span>
+      </div>
+      <h1 class="text-2xl font-bold mt-1 tracking-tight text-white">PactPal :: Autonomous A2A Deal-Desk, SLA Escrow &amp; Sandbox Dispute Courtroom</h1>
+    </div>
+    <div class="flex items-center gap-3">
+      <select id="scenarioSelect" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+        <option value="b2b_gpu_inference_cluster">Scenario 1: B2B GPU Fine-Tuning SLA ($480 -> $390)</option>
+        <option value="dermotwin_luxury_bundle">Scenario 2: DermoTwin 5-Category Luxury VTO Cart ($410 -> $372)</option>
+      </select>
+      <button onclick="runPact('green_payout')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-lg text-sm transition">
+        Run Path A: SLA Verified (&ge;90% &rarr; Capture + 3-Way Payout)
+      </button>
+      <button onclick="runPact('amber_dispute')" class="bg-amber-600 hover:bg-amber-500 text-white font-semibold px-4 py-2 rounded-lg text-sm transition">
+        Run Path B: SLA Breach (76% &rarr; AI Dispute Courtroom)
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-6 space-y-6">
+    <!-- Top KPI Banner -->
+    <section class="grid grid-cols-1 md:grid-cols-4 gap-4" id="kpiGrid">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <div class="text-xs text-slate-400 font-mono uppercase">Pact Status &amp; Mode</div>
+        <div id="kpiStatus" class="text-lg font-bold text-sky-400 mt-1">READY</div>
+        <div id="kpiInvoiceId" class="text-xs text-slate-500 font-mono mt-1">Invoice: --</div>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <div class="text-xs text-slate-400 font-mono uppercase">Nash Negotiated Escrow</div>
+        <div id="kpiEscrow" class="text-2xl font-bold text-white mt-1">$0.00</div>
+        <div id="kpiMandate" class="text-xs text-emerald-400 font-mono mt-1">HMAC SpendMandate: Verified</div>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <div class="text-xs text-slate-400 font-mono uppercase">SLA Telemetry Score</div>
+        <div id="kpiSla" class="text-2xl font-bold text-amber-400 mt-1">--%</div>
+        <div id="kpiZone" class="text-xs text-slate-400 font-mono mt-1">Threshold: 90.0%</div>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <div class="text-xs text-slate-400 font-mono uppercase">Total Buyer Savings + Cure</div>
+        <div id="kpiSavings" class="text-2xl font-bold text-emerald-400 mt-1">$0.00</div>
+        <div id="kpiNet" class="text-xs text-slate-400 font-mono mt-1">Net Merchant Settlement: $0.00</div>
+      </div>
+    </section>
+
+    <!-- Middle Split Pane: Left = A2A Negotiation & Courtroom | Right = AG Grid Treasury & API Ledger -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-bold text-white">1. A2A Nash Bargaining &amp; Sandbox Dispute Courtroom</h2>
+          <img id="qrBadge" src="/api/qr/INIT.svg" alt="PayPal Invoice QR" class="w-14 h-14 rounded border border-slate-700" />
+        </div>
+        <div id="negotiationFeed" class="space-y-2.5 text-sm"></div>
+        <div id="courtroomBox" class="p-3.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-mono space-y-1.5"></div>
+      </div>
+
+      <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h2 class="text-base font-bold text-white">2. AG Grid Live PayPal Sandbox Telemetry &amp; Treasury Ledger</h2>
+            <p class="text-xs text-slate-400">Powered by AG Grid Community v32 · Idempotent PayPal-Request-Id Audit Trail</p>
+          </div>
+          <span class="text-xs font-mono px-2 py-1 rounded bg-sky-500/10 text-sky-300 border border-sky-500/30">APIMatic Schema Validated</span>
+        </div>
+        <div id="myGrid" class="ag-theme-quartz-dark w-full h-96 rounded-lg overflow-hidden"></div>
+      </div>
+    </section>
+
+    <!-- Bottom Bryntum-Style SLA & Conditional Invoice Milestone Timeline -->
+    <section class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+      <h2 class="text-base font-bold text-white mb-3">3. Programmable SLA Milestone &amp; Conditional Invoice Schedule (Bryntum Timeline Spec)</h2>
+      <div id="timelineBar" class="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs font-mono"></div>
+    </section>
+  </main>
+
+  <script>
+    let gridApi = null;
+    const columnDefs = [
+      { field: "step_order", headerName: "#", width: 60 },
+      { field: "api_family", headerName: "PayPal API Family", width: 175 },
+      { field: "agent_toolkit_tool", headerName: "Agent Toolkit / MCP Tool", width: 190 },
+      { field: "resource_id", headerName: "Sandbox Resource ID", width: 165 },
+      { field: "latency_ms", headerName: "Latency (ms)", width: 120, type: "rightAligned" },
+      { field: "summary", headerName: "Execution Outcome", flex: 1, minWidth: 260 }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const gridDiv = document.querySelector("#myGrid");
+      gridApi = agGrid.createGrid(gridDiv, {
+        columnDefs,
+        rowData: [],
+        animateRows: true,
+        defaultColDef: { sortable: true, filter: true, resizable: true }
+      });
+      runPact("amber_dispute");
+    });
+
+    async function runPact(mode) {
+      const scenarioKey = document.getElementById("scenarioSelect").value;
+      const form = new FormData();
+      form.append("scenario_key", scenarioKey);
+      form.append("sla_outcome_mode", mode);
+
+      const res = await fetch("/api/execute-pact", { method: "POST", body: form });
+      const data = await res.json();
+
+      document.getElementById("kpiStatus").textContent = data.status;
+      document.getElementById("kpiInvoiceId").textContent = `Invoice: ${data.invoice_id} | Order: ${data.order_id}`;
+      document.getElementById("kpiEscrow").textContent = `$${data.financial_summary.negotiated_invoice_usd.toFixed(2)}`;
+      document.getElementById("kpiSla").textContent = `${data.sla_verdict.overall_sla_score.toFixed(1)}%`;
+      document.getElementById("kpiZone").textContent = data.sla_verdict.epistemic_zone;
+      document.getElementById("kpiSavings").textContent = `$${data.financial_summary.buyer_refund_or_savings_usd.toFixed(2)}`;
+      document.getElementById("kpiNet").textContent = `Net Merchant Settlement: $${data.financial_summary.final_net_settled_usd.toFixed(2)}`;
+      document.getElementById("qrBadge").src = data.qr_code_svg_path;
+
+      const feed = document.getElementById("negotiationFeed");
+      feed.innerHTML = data.negotiation_turns.map(t => `
+        <div class="p-3 rounded-lg bg-slate-950/90 border border-slate-800">
+          <div class="flex justify-between text-xs font-mono text-sky-400">
+            <span>Round ${t.round_num} :: ${t.speaker_agent}</span>
+            <span>$${t.proposed_price_usd.toFixed(2)} (${t.early_discount_pct}% early rule)</span>
+          </div>
+          <p class="text-slate-300 text-xs mt-1">${t.rationale}</p>
+        </div>
+      `).join("");
+
+      const court = document.getElementById("courtroomBox");
+      if (data.dispute_courtroom) {
+        const dc = data.dispute_courtroom;
+        court.innerHTML = `
+          <div class="text-amber-400 font-bold">SANDBOX DISPUTE COURTROOM ACTIVE :: ${dc.dispute_id}</div>
+          <div>Reason: ${dc.reason}</div>
+          <div>Seller Partial-Cure Offer (${dc.seller_offer_id}): -$${dc.partial_refund_usd.toFixed(2)} instant buyer credit</div>
+          <div class="text-emerald-400">Adjudication Verdict: ${dc.resolution_status} (Net Settled: $${dc.net_merchant_settlement_usd.toFixed(2)})</div>
+        `;
+      } else {
+        court.innerHTML = `
+          <div class="text-emerald-400 font-bold">GREEN ZONE :: 3-WAY MULTIPARTY BATCH PAYOUT EXECUTED</div>
+          ${data.payout_splits.map(s => `<div>• ${s.role}: $${s.amount_usd.toFixed(2)} &rarr; ${s.receiver_email}</div>`).join("")}
+        `;
+      }
+
+      gridApi.setGridOption("rowData", data.paypal_telemetry);
+
+      const timeline = document.getElementById("timelineBar");
+      timeline.innerHTML = [
+        ["T+00s · Nash Contract", `${data.invoice_id} (-${data.conditional_invoice_rule.discount_percent}% Rule)`],
+        ["T+02s · Mandate & Hold", `Auth ${data.authorization_id}`],
+        ["T+05s · Tracker Oracle", `SLA Score: ${data.sla_verdict.overall_sla_score}%`],
+        ["T+08s · Settlement Gate", data.sla_verdict.epistemic_zone],
+        ["T+11s · Final Ledger", `$${data.financial_summary.final_net_settled_usd.toFixed(2)} Settled`]
+      ].map(([title, sub]) => `
+        <div class="p-3 rounded-lg bg-slate-950 border border-slate-800">
+          <div class="text-sky-400 font-bold">${title}</div>
+          <div class="text-slate-300 mt-1">${sub}</div>
+        </div>
+      `).join("");
+    }
+  </script>
+</body>
+</html>

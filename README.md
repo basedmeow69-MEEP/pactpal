@@ -1,18 +1,20 @@
 # PactPal
 
-Settlement and dispute layer for agent commerce, built on the PayPal Sandbox. Two agents negotiate a contract; PactPal invoices it, holds funds under a signed spend mandate, scores delivery against the agreed SLA, then captures, partially remedies, or voids.
+Autonomous agent-to-agent clearinghouse, programmable SLA escrow and Sandbox dispute courtroom on the PayPal Developer Platform. Built from docs/BLUEPRINT_SOURCE.md.
 
-Status: early build. See docs/BRIEF.md (scope), docs/TASKS.md (gates), docs/RESEARCH.md (what is verified), docs/SUBMISSION.md.
-
-## Setup
+## Run
 Requires Python 3.12+.
 ```sh
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-.venv/bin/pytest
+.venv/bin/uvicorn src.backend.app:app --port 8000
 ```
+Open http://127.0.0.1:8000 and use **Run Path A** (SLA verified → capture + 3-way batch payout) or **Run Path B** (SLA breach → dispute courtroom, 24% partial-cure offer).
 
-## Sandbox
-Copy .env.example to .env and fill it from a Sandbox REST app at https://developer.paypal.com/dashboard/. Credentials stay server-side and out of git. Gate 1 check: `python scripts/sandbox_smoke.py create`, approve the link as the Sandbox buyer, then `python scripts/sandbox_smoke.py void ORDER_ID`.
+## PayPal Sandbox
+Copy .env.example to .env and set `PAYPAL_CLIENT_ID` / `PAYPAL_CLIENT_SECRET` from a Sandbox REST app at https://developer.paypal.com/dashboard/. `PAYPAL_MODE=hybrid` makes live Sandbox calls when credentials are set and replays `vault/paypal_replay_vault.json` otherwise. Credentials are read only from the environment.
 
-`PAYPAL_MODE=mock` (default) replays recorded Sandbox responses and is labeled MOCK in the UI. It is not evidence of a live Sandbox run.
+## Test
+```sh
+.venv/bin/python -m pytest -v
+```

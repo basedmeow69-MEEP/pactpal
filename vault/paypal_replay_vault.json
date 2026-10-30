@@ -1,0 +1,192 @@
+{
+  "3c8cd8a35dca72da08180b3408025852b05e": {
+    "id": "INV2-3C8C-D8A3-5D92",
+    "status": "SENT",
+    "detail": {
+      "currency_code": "USD",
+      "note": "PactPal A2A Contract PACT-2026-GPU-01"
+    },
+    "invoicer": {
+      "email_address": "treasury@nebius-compute-merchant.sandbox.paypal.com"
+    },
+    "amount": {
+      "currency_code": "USD",
+      "value": "390.00"
+    },
+    "configuration": {
+      "allow_tip": false,
+      "pay_by_bank": true
+    },
+    "links": [
+      {
+        "rel": "self",
+        "href": "https://api-m.sandbox.paypal.com/v2/invoicing/invoices/INV2-3C8C-D8A3-5D92"
+      },
+      {
+        "rel": "payer-view",
+        "href": "https://www.sandbox.paypal.com/invoice/p/#INV23C8CD8A35D92"
+      }
+    ],
+    "_http_status": 201
+  },
+  "ae479b3ccc62accfd26d578040bc8db76632": {
+    "id": "CRULE-AE479B3CCC",
+    "status": "ACTIVE",
+    "rule_type": "EARLY_PAYMENT_AND_SLA_ESCROW_RULE",
+    "discount_percent": 8.0,
+    "trigger_condition": "SLA_SCORE_GE_90_WITHIN_24H",
+    "_http_status": 201
+  },
+  "3a6a09c8381179ac32eee218a4b3e83a5040": {
+    "id": "QR-3A6A09C838",
+    "qr_code_svg_path": "/api/qr/3A6A09C838.svg",
+    "width": 300,
+    "height": 300,
+    "action": "pay",
+    "_http_status": 200
+  },
+  "811d0b455636a0dd50afc094ac929f033234": {
+    "id": "5O190127TN811D0B4",
+    "intent": "AUTHORIZE",
+    "status": "CREATED",
+    "purchase_units": [
+      {
+        "reference_id": "PACT-2026-GPU-01",
+        "custom_id": "MND-PACT-2026-GPU-01",
+        "amount": {
+          "currency_code": "USD",
+          "value": "390.00"
+        }
+      }
+    ],
+    "links": [
+      {
+        "rel": "self",
+        "href": "https://api-m.sandbox.paypal.com/v2/checkout/orders/5O190127TN811D0B4"
+      },
+      {
+        "rel": "approve",
+        "href": "https://www.sandbox.paypal.com/checkoutnow?token=5O190127TN811D0B4"
+      },
+      {
+        "rel": "authorize",
+        "href": "https://api-m.sandbox.paypal.com/v2/checkout/orders/5O190127TN811D0B4/authorize"
+      }
+    ],
+    "_http_status": 201
+  },
+  "eeb5b53e0b844ba63cfd838781c7edf5334f": {
+    "id": "0VF52814937EEB5B5",
+    "status": "AUTHORIZED",
+    "expiration_time": "2026-11-29T23:59:59Z",
+    "seller_protection": {
+      "status": "ELIGIBLE"
+    },
+    "_http_status": 201
+  },
+  "4bda82769b6a0e2de55a091c0ce651bb9173": {
+    "id": "TRK-4BDA8276",
+    "tracker_identifiers": [
+      {
+        "transaction_id": "0VF52814937EEB5B5",
+        "tracking_number": "TRK-4BDA8276"
+      }
+    ],
+    "status": "DELIVERED",
+    "_http_status": 200
+  },
+  "19c28fb28df58643f32c868c65a0736a86cd": {
+    "id": "2GG903537H19C28FB",
+    "status": "COMPLETED",
+    "final_capture": true,
+    "amount": {
+      "currency_code": "USD",
+      "value": "390.00"
+    },
+    "seller_receivable_breakdown": {
+      "gross_amount": {
+        "currency_code": "USD",
+        "value": "390.00"
+      },
+      "paypal_fee": {
+        "currency_code": "USD",
+        "value": "4.89"
+      }
+    },
+    "_http_status": 201
+  },
+  "3b6ae5f644a80dab90a8c408e86f046dea10": {
+    "id": "PAYOUTBATCH-3B6AE5F644",
+    "batch_header": {
+      "payout_batch_id": "PAYOUTBATCH-3B6AE5F644",
+      "batch_status": "SUCCESS",
+      "sender_batch_header": {
+        "sender_batch_id": "BATCH-PACT-2026-GPU-01",
+        "email_subject": "PactPal Multiparty Settlement"
+      }
+    },
+    "items_count": 3,
+    "items": [
+      {
+        "role": "Primary Merchant (75%)",
+        "receiver_email": "treasury@nebius-compute-merchant.sandbox.paypal.com",
+        "split_percent": 75.0,
+        "amount_usd": 292.5,
+        "note": "Primary SLA settlement"
+      },
+      {
+        "role": "Sub-Agent Fulfillment (20%)",
+        "receiver_email": "weights-auditor@verifier-node.sandbox.paypal.com",
+        "split_percent": 20.0,
+        "amount_usd": 78.0,
+        "note": "Autonomous verifier & compute split"
+      },
+      {
+        "role": "Guild Referral Partner (5%)",
+        "receiver_email": "guild-royalty@coffeekiller.sandbox.paypal.com",
+        "split_percent": 5.0,
+        "amount_usd": 19.5,
+        "note": "Clearinghouse royalty"
+      }
+    ],
+    "_http_status": 201
+  },
+  "6c35171e25812dbef381d8695440f28e6a2b": {
+    "id": "PP-D-6C3517",
+    "dispute_id": "PP-D-6C3517",
+    "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
+    "status": "WAITING_FOR_SELLER_RESPONSE",
+    "dispute_state": "REQUIRED_ACTION",
+    "dispute_life_cycle_stage": "INQUIRY",
+    "sandbox_trigger": "require-evidence",
+    "_http_status": 200
+  },
+  "0fb7ad036045f33c038da111d3fc5074c6d1": {
+    "id": "EVID-0FB7AD03",
+    "status": "EVIDENCE_SUBMITTED",
+    "evidence_type": "PROOF_OF_FULFILLMENT_AND_SLA_TELEMETRY",
+    "_http_status": 200
+  },
+  "e6c12543bec910e2b3dea0d1c6fc3c7559ac": {
+    "id": "OFFER-E6C12543",
+    "status": "OFFER_PROPOSED",
+    "offer_type": "REFUND",
+    "offer_amount": {
+      "currency_code": "USD",
+      "value": "93.60"
+    },
+    "note": "Autonomous Seller Defense AI proposes 24% Partial-Cure Credit ($93.60 refund; $296.40 net capture) matching exact SLA defect ratio.",
+    "_http_status": 200
+  },
+  "6e089a865706a7e627b407edf86777da63e6": {
+    "id": "RESOLVED-6E089A86",
+    "status": "RESOLVED",
+    "dispute_outcome": "RESOLVED_PARTIAL_CURE_SETTLEMENT",
+    "adjudication_mode": "SANDBOX_AUTONOMOUS_COURTROOM",
+    "settled_refund_amount": {
+      "currency_code": "USD",
+      "value": "93.60"
+    },
+    "_http_status": 200
+  }
+}

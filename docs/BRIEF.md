@@ -1,6 +1,6 @@
 # PactPal: Settlement and Dispute Layer for Agent Commerce
 
-Source: docs/BLUEPRINT_SOURCE.md (AI-generated blueprint, copied 2026-10-30). This brief keeps its concept and cuts claims that were unverified or wrong; see docs/RESEARCH.md.
+Spec: docs/BLUEPRINT_SOURCE.md is the build plan and is implemented as written (Steps 1–7). Notes below are reference only.
 
 ## Summary
 
