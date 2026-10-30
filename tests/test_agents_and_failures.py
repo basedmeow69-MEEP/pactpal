@@ -86,3 +86,25 @@ def test_live_sandbox_error_halts_instead_of_faking_success(monkeypatch, tmp_pat
     assert res["error"]["http_status"] == 422
     assert res["error"]["paypal_response"] == {"name": "INVALID_REQUEST"}
     assert res["paypal_telemetry"][-1]["summary"].startswith("FAILED")
+
+
+def test_revoked_token_is_refreshed_and_call_retried(monkeypatch, tmp_path: Path):
+    tokens = iter(["old", "new"])
+    seen = []
+
+    class Resp(io.BytesIO):
+        status = 201
+
+    def fake_urlopen(req, timeout=0):
+        if req.full_url.endswith("/v1/oauth2/token"):
+            return io.BytesIO(('{"access_token": "%s", "expires_in": 32400}' % next(tokens)).encode())
+        seen.append(req.get_header("Authorization"))
+        if req.get_header("Authorization") == "Bearer old":
+            raise urllib.error.HTTPError(req.full_url, 401, "Unauthorized", {}, io.BytesIO(b"{}"))
+        return Resp(b'{"id": "ORDER1", "status": "CREATED"}')
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    client = PayPalSandboxClient(client_id="id", client_secret="secret", mode="live", vault_path=tmp_path / "v.json")
+    body, tel = client.invoke_sandbox_endpoint("P", "Orders v2", "POST", "/v2/checkout/orders", "create_order", {}, "{id}")
+    assert body["id"] == "ORDER1" and tel.source == "LIVE SANDBOX"
+    assert seen == ["Bearer old", "Bearer new"]

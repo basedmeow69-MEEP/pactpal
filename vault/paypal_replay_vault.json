@@ -402,5 +402,600 @@
     "status": "CANCELLED",
     "_http_status": 204,
     "_source": "SIMULATED"
+  },
+  "94b097625681f377aa7949ea45ffba85a7d4": {
+    "rel": "self",
+    "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-GW7J-5PFD-DCY9-CJAK",
+    "method": "GET",
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX",
+    "id": "PP-94B0976256"
+  },
+  "4dde9ba1c25d95732a8163650b69a04a8b28": {
+    "id": "INV2-7XV3-9DN3-KL6B-2ECZ",
+    "status": "DRAFT",
+    "detail": {
+      "currency_code": "USD",
+      "note": "PactPal A2A Contract PACT-2026-GPU-01-live1793391290",
+      "category_code": "SHIPPABLE",
+      "invoice_number": "0002",
+      "invoice_date": "2026-10-30",
+      "payment_term": {
+        "term_type": "NO_DUE_DATE"
+      },
+      "viewed_by_recipient": false,
+      "group_draft": false,
+      "metadata": {
+        "create_time": "2026-10-30T20:14:55Z",
+        "last_update_time": "2026-10-30T20:14:55Z",
+        "created_by_flow": "REGULAR_SINGLE",
+        "recipient_view_url": "https://www.sandbox.paypal.com/invoice/p/#7XV39DN3KL6B2ECZ",
+        "invoicer_view_url": "https://www.sandbox.paypal.com/invoice/details/INV2-7XV3-9DN3-KL6B-2ECZ",
+        "caller_type": "API_V2_INVOICE",
+        "spam_info": {}
+      },
+      "archived": false
+    },
+    "invoicer": {
+      "business_name": "PactPal Seller Deal-Desk"
+    },
+    "items": [
+      {
+        "id": "ITEM-6799898221312310N",
+        "name": "LoRA Checkpoint Distillation (50k Rows)",
+        "quantity": "1",
+        "unit_amount": {
+          "currency_code": "USD",
+          "value": "240.00"
+        }
+      },
+      {
+        "id": "ITEM-9NS47934CE413915G",
+        "name": "Dedicated Low-Latency Inference Slot (24h SLA <150ms)",
+        "quantity": "1",
+        "unit_amount": {
+          "currency_code": "USD",
+          "value": "150.00"
+        }
+      }
+    ],
+    "configuration": {
+      "tax_calculated_after_discount": false,
+      "tax_inclusive": false,
+      "allow_tip": false,
+      "allow_only_pay_by_bank": false,
+      "allow_vba_payments": false,
+      "save_item_for_future": true,
+      "template_id": "TEMP-34X08926X6995120S"
+    },
+    "amount": {
+      "breakdown": {
+        "item_total": {
+          "currency_code": "USD",
+          "value": "390.00"
+        },
+        "discount": {
+          "invoice_discount": {
+            "amount": {
+              "currency_code": "USD",
+              "value": "0.00"
+            }
+          },
+          "item_discount": {
+            "currency_code": "USD",
+            "value": "0.00"
+          }
+        },
+        "tax_total": {
+          "currency_code": "USD",
+          "value": "0.00"
+        }
+      },
+      "currency_code": "USD",
+      "value": "390.00"
+    },
+    "due_amount": {
+      "currency_code": "USD",
+      "value": "390.00"
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-7XV3-9DN3-KL6B-2ECZ",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-7XV3-9DN3-KL6B-2ECZ/send",
+        "rel": "send",
+        "method": "POST"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-7XV3-9DN3-KL6B-2ECZ",
+        "rel": "replace",
+        "method": "PUT"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-7XV3-9DN3-KL6B-2ECZ",
+        "rel": "delete",
+        "method": "DELETE"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-7XV3-9DN3-KL6B-2ECZ/payments",
+        "rel": "record-payment",
+        "method": "POST"
+      }
+    ],
+    "unilateral": false,
+    "settings": {},
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
+  },
+  "8deb27fd60e99e21c82b92135e8a56df5a2a": {
+    "id": "INV2-4W2B-XG66-SWEL-VDJH",
+    "status": "DRAFT",
+    "detail": {
+      "currency_code": "USD",
+      "note": "PactPal A2A Contract PACT-2026-GPU-01-live1793391376",
+      "category_code": "SHIPPABLE",
+      "invoice_number": "0003",
+      "invoice_date": "2026-10-30",
+      "payment_term": {
+        "term_type": "NO_DUE_DATE"
+      },
+      "viewed_by_recipient": false,
+      "group_draft": false,
+      "metadata": {
+        "create_time": "2026-10-30T20:16:26Z",
+        "last_update_time": "2026-10-30T20:16:26Z",
+        "created_by_flow": "REGULAR_SINGLE",
+        "recipient_view_url": "https://www.sandbox.paypal.com/invoice/p/#4W2BXG66SWELVDJH",
+        "invoicer_view_url": "https://www.sandbox.paypal.com/invoice/details/INV2-4W2B-XG66-SWEL-VDJH",
+        "caller_type": "API_V2_INVOICE",
+        "spam_info": {}
+      },
+      "archived": false
+    },
+    "invoicer": {
+      "business_name": "PactPal Seller Deal-Desk"
+    },
+    "items": [
+      {
+        "id": "ITEM-26N53650FB8957534",
+        "name": "LoRA Checkpoint Distillation (50k Rows)",
+        "quantity": "1",
+        "unit_amount": {
+          "currency_code": "USD",
+          "value": "240.00"
+        }
+      },
+      {
+        "id": "ITEM-57695394YP7102354",
+        "name": "Dedicated Low-Latency Inference Slot (24h SLA <150ms)",
+        "quantity": "1",
+        "unit_amount": {
+          "currency_code": "USD",
+          "value": "150.00"
+        }
+      }
+    ],
+    "configuration": {
+      "tax_calculated_after_discount": false,
+      "tax_inclusive": false,
+      "allow_tip": false,
+      "allow_only_pay_by_bank": false,
+      "allow_vba_payments": false,
+      "save_item_for_future": true,
+      "template_id": "TEMP-34X08926X6995120S"
+    },
+    "amount": {
+      "breakdown": {
+        "item_total": {
+          "currency_code": "USD",
+          "value": "390.00"
+        },
+        "discount": {
+          "invoice_discount": {
+            "amount": {
+              "currency_code": "USD",
+              "value": "0.00"
+            }
+          },
+          "item_discount": {
+            "currency_code": "USD",
+            "value": "0.00"
+          }
+        },
+        "tax_total": {
+          "currency_code": "USD",
+          "value": "0.00"
+        }
+      },
+      "currency_code": "USD",
+      "value": "390.00"
+    },
+    "due_amount": {
+      "currency_code": "USD",
+      "value": "390.00"
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-4W2B-XG66-SWEL-VDJH",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-4W2B-XG66-SWEL-VDJH/send",
+        "rel": "send",
+        "method": "POST"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-4W2B-XG66-SWEL-VDJH",
+        "rel": "replace",
+        "method": "PUT"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-4W2B-XG66-SWEL-VDJH",
+        "rel": "delete",
+        "method": "DELETE"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-4W2B-XG66-SWEL-VDJH/payments",
+        "rel": "record-payment",
+        "method": "POST"
+      }
+    ],
+    "unilateral": false,
+    "settings": {},
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
+  },
+  "8d3f3cef5378483b857b695ad78e738aea41": {
+    "id": "INV2-DVKM-M3AX-WJLB-6JKZ",
+    "status": "DRAFT",
+    "detail": {
+      "currency_code": "USD",
+      "note": "PactPal A2A Contract PACT-2026-GPU-01-live1793391455",
+      "category_code": "SHIPPABLE",
+      "invoice_number": "0007",
+      "invoice_date": "2026-10-30",
+      "payment_term": {
+        "term_type": "NO_DUE_DATE"
+      },
+      "viewed_by_recipient": false,
+      "group_draft": false,
+      "metadata": {
+        "create_time": "2026-10-30T20:17:37Z",
+        "last_update_time": "2026-10-30T20:17:37Z",
+        "created_by_flow": "REGULAR_SINGLE",
+        "recipient_view_url": "https://www.sandbox.paypal.com/invoice/p/#DVKMM3AXWJLB6JKZ",
+        "invoicer_view_url": "https://www.sandbox.paypal.com/invoice/details/INV2-DVKM-M3AX-WJLB-6JKZ",
+        "caller_type": "API_V2_INVOICE",
+        "spam_info": {}
+      },
+      "archived": false
+    },
+    "invoicer": {
+      "business_name": "PactPal Seller Deal-Desk"
+    },
+    "items": [
+      {
+        "id": "ITEM-3CA31033KV055221A",
+        "name": "LoRA Checkpoint Distillation (50k Rows)",
+        "quantity": "1",
+        "unit_amount": {
+          "currency_code": "USD",
+          "value": "240.00"
+        }
+      },
+      {
+        "id": "ITEM-51X265476N090842H",
+        "name": "Dedicated Low-Latency Inference Slot (24h SLA <150ms)",
+        "quantity": "1",
+        "unit_amount": {
+          "currency_code": "USD",
+          "value": "150.00"
+        }
+      }
+    ],
+    "configuration": {
+      "tax_calculated_after_discount": false,
+      "tax_inclusive": false,
+      "allow_tip": false,
+      "allow_only_pay_by_bank": false,
+      "allow_vba_payments": false,
+      "save_item_for_future": true,
+      "template_id": "TEMP-34X08926X6995120S"
+    },
+    "amount": {
+      "breakdown": {
+        "item_total": {
+          "currency_code": "USD",
+          "value": "390.00"
+        },
+        "discount": {
+          "invoice_discount": {
+            "amount": {
+              "currency_code": "USD",
+              "value": "0.00"
+            }
+          },
+          "item_discount": {
+            "currency_code": "USD",
+            "value": "0.00"
+          }
+        },
+        "tax_total": {
+          "currency_code": "USD",
+          "value": "0.00"
+        }
+      },
+      "currency_code": "USD",
+      "value": "390.00"
+    },
+    "due_amount": {
+      "currency_code": "USD",
+      "value": "390.00"
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-DVKM-M3AX-WJLB-6JKZ",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-DVKM-M3AX-WJLB-6JKZ/send",
+        "rel": "send",
+        "method": "POST"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-DVKM-M3AX-WJLB-6JKZ",
+        "rel": "replace",
+        "method": "PUT"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-DVKM-M3AX-WJLB-6JKZ",
+        "rel": "delete",
+        "method": "DELETE"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-DVKM-M3AX-WJLB-6JKZ/payments",
+        "rel": "record-payment",
+        "method": "POST"
+      }
+    ],
+    "unilateral": false,
+    "settings": {},
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
+  },
+  "858283a400aa756a067b9dfec4bc6f217264": {
+    "href": "https://www.sandbox.paypal.com/invoice/p/#INV2-DVKM-M3AX-WJLB-6JKZ",
+    "rel": "payer-view",
+    "method": "GET",
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX",
+    "id": "#INV2-DVKM-M3AX-WJLB-6JKZ"
+  },
+  "947b3ac548eba46162cb0b08093dabeac312": {
+    "id": "INV2-AP26-5BE9-QX7K-PUDC",
+    "status": "DRAFT",
+    "detail": {
+      "currency_code": "USD",
+      "note": "PactPal A2A Contract PACT-2026-GPU-01-live1793391472",
+      "category_code": "SHIPPABLE",
+      "invoice_number": "0008",
+      "invoice_date": "2026-10-30",
+      "payment_term": {
+        "term_type": "NO_DUE_DATE"
+      },
+      "viewed_by_recipient": false,
+      "group_draft": false,
+      "metadata": {
+        "create_time": "2026-10-30T20:18:12Z",
+        "last_update_time": "2026-10-30T20:18:12Z",
+        "created_by_flow": "REGULAR_SINGLE",
+        "recipient_view_url": "https://www.sandbox.paypal.com/invoice/p/#AP265BE9QX7KPUDC",
+        "invoicer_view_url": "https://www.sandbox.paypal.com/invoice/details/INV2-AP26-5BE9-QX7K-PUDC",
+        "caller_type": "API_V2_INVOICE",
+        "spam_info": {}
+      },
+      "archived": false
+    },
+    "invoicer": {
+      "business_name": "PactPal Seller Deal-Desk"
+    },
+    "items": [
+      {
+        "id": "ITEM-5P987156L0363741H",
+        "name": "LoRA Checkpoint Distillation (50k Rows)",
+        "quantity": "1",
+        "unit_amount": {
+          "currency_code": "USD",
+          "value": "240.00"
+        }
+      },
+      {
+        "id": "ITEM-7RX52837P11218218",
+        "name": "Dedicated Low-Latency Inference Slot (24h SLA <150ms)",
+        "quantity": "1",
+        "unit_amount": {
+          "currency_code": "USD",
+          "value": "150.00"
+        }
+      }
+    ],
+    "configuration": {
+      "tax_calculated_after_discount": false,
+      "tax_inclusive": false,
+      "allow_tip": false,
+      "allow_only_pay_by_bank": false,
+      "allow_vba_payments": false,
+      "save_item_for_future": true,
+      "template_id": "TEMP-34X08926X6995120S"
+    },
+    "amount": {
+      "breakdown": {
+        "item_total": {
+          "currency_code": "USD",
+          "value": "390.00"
+        },
+        "discount": {
+          "invoice_discount": {
+            "amount": {
+              "currency_code": "USD",
+              "value": "0.00"
+            }
+          },
+          "item_discount": {
+            "currency_code": "USD",
+            "value": "0.00"
+          }
+        },
+        "tax_total": {
+          "currency_code": "USD",
+          "value": "0.00"
+        }
+      },
+      "currency_code": "USD",
+      "value": "390.00"
+    },
+    "due_amount": {
+      "currency_code": "USD",
+      "value": "390.00"
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-AP26-5BE9-QX7K-PUDC",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-AP26-5BE9-QX7K-PUDC/send",
+        "rel": "send",
+        "method": "POST"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-AP26-5BE9-QX7K-PUDC",
+        "rel": "replace",
+        "method": "PUT"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-AP26-5BE9-QX7K-PUDC",
+        "rel": "delete",
+        "method": "DELETE"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-AP26-5BE9-QX7K-PUDC/payments",
+        "rel": "record-payment",
+        "method": "POST"
+      }
+    ],
+    "unilateral": false,
+    "settings": {},
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
+  },
+  "d527c1b0cba237a6c43bf26d2bd40c8e034f": {
+    "href": "https://www.sandbox.paypal.com/invoice/p/#INV2-AP26-5BE9-QX7K-PUDC",
+    "rel": "payer-view",
+    "method": "GET",
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX",
+    "id": "INV2-AP26-5BE9-QX7K-PUDC"
+  },
+  "acca12dc238dd1b1180b38cc38fbbc7cf246": {
+    "qr_png_base64": "--058c2c13-528e-4a1e-a49d-141e24935442\r\nContent-Disposition: form-data; name=\"image\"\r\nContent-Type: text/plain\r\n\r\niVBORw0KGgoAAAANSUhEUgAAASwAAAEsAQAAAABRBrPYAAACPUlEQVR4Xu2XQY7kIAxFnVWOwU1J5aY5wixZhfH7ptQT1FLPZjQqCytCDnks6vNtKOt/E79snvk2FjbFwqZY2BQLm2JhU/wL7Dbi6FfdL9t53SL32HNh5MwfrQQTq47xKRPmOsQk49nKywoLzWpGLCZPf2+uRn+9Z/JhRytd2+1qnP1rYS6sa6PLa3cdZAA0CTPkwoyorsDzYTYXNqJ5y0KNrRWv6JAiIg2GIPx897Y73Nj3Zrw2ZjJhLkWVt6sKecPhw95/mjwBdnsh+2kbOgyevGL1XNgwtrkgyuMqxfn7cEgOLE4ft/quY1cm70ymwiAp3re3W4nxjCQXdlLFHLu34W2XY5PJJ0FSYOMGdbgIiBMjx1MuDHtvmnzRtZwh9/EpyOdjrfSwtOHzDs9Co48lw+hUGzDePjAAY50FSYC5vanoqvO37pIoalzf02A3xvavsjreZsdP1j4aVwKse3PWP7tOOUcVC2hzLXw6xs+P+iUhx+TNalR3IgzS6Fqb9lokM/DpsFO3xFOHkdRwJ1zDAIkwqRGPIUgrnZY11EiFjcbl9QsWrxv5U5AMGE8fh1FxG2yalBOSYZf//LrHYRQ7fhk2mHX7dCziVkM+BVQBb6HyYA7oExv9UnKqcQWcCiP3zlxQQyIIG2rkwvwrtUz9WtESabSPLp0N2+WBsfvse5UZMmK6WuiyUb20G4LUbJgPbP3t+06vpn0dI8mFGVGlCYnzGKB0VXcm7MdY2BQLm2JhUyxsioVN8X+w38y//MyOtIeYAAAAAElFTkSuQmCC\r\n--058c2c13-528e-4a1e-a49d-141e24935442--",
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX",
+    "id": "PP-ACCA12DC23"
+  },
+  "166de7d497a742df75fbb1911f6339c9dd55": {
+    "id": "1TK548202F828453K",
+    "intent": "AUTHORIZE",
+    "status": "CREATED",
+    "purchase_units": [
+      {
+        "reference_id": "PACT-2026-GPU-01-live1793391472",
+        "amount": {
+          "currency_code": "USD",
+          "value": "390.00"
+        },
+        "payee": {
+          "email_address": "sb-tmbkq53634617@business.example.com",
+          "merchant_id": "HFPMFGXK8CZYJ"
+        },
+        "custom_id": "MND-PACT-2026-GPU-01-live1793391472"
+      }
+    ],
+    "create_time": "2026-10-30T20:18:15Z",
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/1TK548202F828453K",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://www.sandbox.paypal.com/checkoutnow?token=1TK548202F828453K",
+        "rel": "approve",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/1TK548202F828453K",
+        "rel": "update",
+        "method": "PATCH"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/1TK548202F828453K/authorize",
+        "rel": "authorize",
+        "method": "POST"
+      }
+    ],
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
+  },
+  "a46fa76d0eeebecd15da2e8def18591585ba": {
+    "id": "1TK548202F828453K",
+    "intent": "AUTHORIZE",
+    "status": "CREATED",
+    "purchase_units": [
+      {
+        "reference_id": "PACT-2026-GPU-01-live1793391472",
+        "amount": {
+          "currency_code": "USD",
+          "value": "390.00",
+          "breakdown": {}
+        },
+        "payee": {
+          "email_address": "sb-tmbkq53634617@business.example.com",
+          "merchant_id": "HFPMFGXK8CZYJ"
+        },
+        "custom_id": "MND-PACT-2026-GPU-01-live1793391472"
+      }
+    ],
+    "create_time": "2026-10-30T20:18:15Z",
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/1TK548202F828453K",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://www.sandbox.paypal.com/checkoutnow?token=1TK548202F828453K",
+        "rel": "approve",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/1TK548202F828453K/authorize",
+        "rel": "authorize",
+        "method": "POST"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/1TK548202F828453K",
+        "rel": "update",
+        "method": "PATCH"
+      }
+    ],
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX"
   }
 }

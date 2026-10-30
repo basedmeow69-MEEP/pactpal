@@ -178,17 +178,37 @@ class PayPalSandboxClient:
         headers = {
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json",
-            "Accept": "application/json",
+            # generate-qr-code replies with a multipart PNG, so it must not insist on JSON
+            "Accept": "*/*" if "/generate-qr-code" in endpoint else "application/json",
             "PayPal-Request-Id": request_id,
+            "Prefer": "return=representation",
         }
         req_data = json.dumps(payload).encode("utf-8") if http_method.upper() != "GET" else None
         req = urllib.request.Request(url, data=req_data, headers=headers, method=http_method.upper())
         try:
-            with urllib.request.urlopen(req, timeout=25.0) as resp:
+            try:
+                resp_ctx = urllib.request.urlopen(req, timeout=25.0)
+            except urllib.error.HTTPError as auth_exc:
+                if auth_exc.code != 401:
+                    raise
+                # Token revoked or expired early: fetch a fresh one and retry once.
+                self._access_token = ""
+                req.add_header("Authorization", f"Bearer {self.get_oauth_token()}")
+                resp_ctx = urllib.request.urlopen(req, timeout=25.0)
+            with resp_ctx as resp:
                 raw_bytes = resp.read()
-                body = json.loads(raw_bytes.decode("utf-8")) if raw_bytes else {"status": "COMPLETED"}
+                text = raw_bytes.decode("utf-8", errors="replace") if raw_bytes else ""
+                try:
+                    body = json.loads(text) if text else {"status": "COMPLETED"}
+                except ValueError:
+                    body = None
+                if not isinstance(body, dict):
+                    # generate-qr-code answers with a base64 PNG, not JSON
+                    body = {"qr_png_base64": text} if "/generate-qr-code" in endpoint else {"raw": text}
                 body["_http_status"] = resp.status
                 body["_source"] = "LIVE SANDBOX"
+                if "id" not in body and body.get("href"):
+                    body["id"] = body["href"].rstrip("/").rsplit("/", 1)[-1].lstrip("#")
                 body.setdefault("id", f"PP-{request_id[:10].upper()}")
         except urllib.error.HTTPError as exc:
             # Never substitute simulated data for a failed live call: surface PayPal's real error.
@@ -248,7 +268,10 @@ class PayPalSandboxClient:
                 "status": "SENT",
                 "detail": payload.get("detail", {}),
                 "invoicer": payload.get("invoicer", {}),
-                "amount": payload.get("amount", {}),
+                "amount": {
+                    "currency_code": "USD",
+                    "value": f"{sum(float(i['unit_amount']['value']) * int(i['quantity']) for i in payload.get('items', [])):.2f}",
+                },
                 "configuration": {"allow_tip": False, "pay_by_bank": True},
                 "links": [
                     {"rel": "self", "href": f"https://api-m.sandbox.paypal.com/v2/invoicing/invoices/{inv_id}"},
@@ -267,6 +290,9 @@ class PayPalSandboxClient:
                 "trigger_condition": payload.get("trigger_condition", "SLA_VERIFIED_UNDER_24H"),
                 "_http_status": 201,
             }
+
+        if endpoint.endswith("/send"):
+            return {"id": f"SEND-{short[:8]}", "status": "SENT", "_http_status": 202}
 
         if "/generate-qr-code" in endpoint:
             return {

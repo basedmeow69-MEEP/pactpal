@@ -53,3 +53,11 @@ Crowd-saturation percentages, participant count, the 99/100 self-score, market-s
 
 - AG Grid row grouping and sparklines are Enterprise features (license / watermark). Confirm what the sponsor prize accepts.
 - Bryntum is commercial; the blueprint's "Bryntum-style" timeline would not be a Bryntum integration.
+
+## Live Sandbox findings (2026-10-30)
+
+- Invoicing scope must be enabled on the app; PayPal keeps reusing an already-issued token (up to 9h), so revoke it (`/v1/oauth2/token/terminate`) after changing features.
+- Invoice create: do not send a top-level `amount` (PayPal computes it; mismatch is `calculation_error`). Returns only a link unless `Prefer: return=representation`.
+- Conditional rules: documented body (`rules[]` with `EARLY_PAYMENT_DISCOUNT`/`AUTO_CANCEL`, `rule_expiry_terms`) returns intermittent 422/500 in this Sandbox for draft and recipient invoices. Treated as non-blocking; failure shown in the ledger.
+- Send invoice (`send_to_recipient: false`) works. QR code works only after send and only with a non-JSON `Accept`; response is multipart PNG.
+- Orders `AUTHORIZE`: create works; `/authorize` returns 422 `ORDER_NOT_APPROVED` until the Sandbox buyer approves.

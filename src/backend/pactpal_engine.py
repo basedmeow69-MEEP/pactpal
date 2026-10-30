@@ -1,7 +1,9 @@
 """PactPal Core Engine: A2A Nash Deal-Desk, Telemetry Escrow & Sandbox Dispute Courtroom."""
 from __future__ import annotations
 
+import re
 from dataclasses import asdict, dataclass
+from datetime import date, timedelta
 from typing import Any
 
 from src.apimatic_sdk.models import (
@@ -12,6 +14,15 @@ from src.apimatic_sdk.models import (
 )
 from src.backend.negotiation_agents import CLAUDE_MODEL, claude_available, run_claude_negotiation
 from src.backend.paypal_sandbox_client import PayPalSandboxClient, PayPalSandboxError
+
+
+def qr_image_src(qr_res: dict[str, Any]) -> str:
+    """Live Sandbox returns the QR as a base64 PNG; simulated runs return an SVG path."""
+    png = qr_res.get("qr_png_base64")
+    if png:
+        match = re.search(r"[A-Za-z0-9+/=]{200,}", png)
+        return f"data:image/png;base64,{match.group(0) if match else png}"
+    return qr_res.get("qr_code_svg_path", "/api/qr/default.svg")
 
 
 @dataclass
@@ -293,36 +304,64 @@ class PactPalClearinghouseEngine:
             endpoint="/v2/invoicing/invoices",
             agent_toolkit_tool="create_invoice",
             payload={
+                # PayPal computes the total from the items; the invoicer is the authenticated Sandbox merchant.
                 "detail": {"currency_code": "USD", "note": f"PactPal A2A Contract {pact_id}"},
-                "invoicer": {"email_address": scenario["merchant_email"]},
+                "invoicer": {"business_name": "PactPal Seller Deal-Desk"},
                 "items": line_items,
-                "amount": {"currency_code": "USD", "value": f"{settled_usd:.2f}"},
             },
             summary_template="Created PayPal Sandbox Invoice {id} with PAY_BY_BANK enabled",
         )
         telemetry_log.append(inv_tel)
         invoice_id = inv_res["id"]
 
-        # Call 2 [Invoices v2 Conditional Rules]: Attach programmable discount/SLA rule
-        _, rule_tel = self.client.invoke_sandbox_endpoint(
-            pact_id=pact_id,
-            api_family="Invoices v2 Conditional Rules",
-            http_method="POST",
-            endpoint=f"/v2/invoicing/invoices/{invoice_id}/conditional-rules",
-            agent_toolkit_tool="create_conditional_rules_for_invoice",
-            payload=asdict(cond_rule),
-            summary_template="Attached Conditional Pricing Rule {id} (early discount & SLA gate)",
-        )
-        telemetry_log.append(rule_tel)
+        # Call 2 [Invoices v2 Conditional Rules]: Attach programmable discount/SLA rule.
+        # Non-blocking: the Sandbox has returned intermittent 422/500s here; the failure stays visible in the ledger.
+        try:
+            _, rule_tel = self.client.invoke_sandbox_endpoint(
+                pact_id=pact_id,
+                api_family="Invoices v2 Conditional Rules",
+                http_method="POST",
+                endpoint=f"/v2/invoicing/invoices/{invoice_id}/conditional-rules",
+                agent_toolkit_tool="create_conditional_rules_for_invoice",
+                payload={
+                    "rules": [
+                        {
+                            "conditional_rule_type": "EARLY_PAYMENT_DISCOUNT",
+                            "conditional_rule_value_type": "PERCENT",
+                            "conditional_rule_value": f"{max(cond_rule.discount_percent, 1):g}",
+                            "rule_expiry_terms": {
+                                "rule_expiry_condition": "THREE_DAYS_AFTER_ISSUE_DATE",
+                                "condition_rule_end_date": (date.today() + timedelta(days=3)).isoformat(),
+                            },
+                        }
+                    ]
+                },
+                summary_template="Attached Conditional Pricing Rule {id} (early discount & SLA gate)",
+            )
+            telemetry_log.append(rule_tel)
+        except PayPalSandboxError as exc:
+            telemetry_log.append(exc.telemetry)
 
-        # Call 3 [Invoices v2 QR Code]: Generate mobile scannable QR code
+        # Call 3 [Invoices v2 Send]: a QR code exists only once the invoice is payable
+        _, send_tel = self.client.invoke_sandbox_endpoint(
+            pact_id=pact_id,
+            api_family="Invoices v2 Send",
+            http_method="POST",
+            endpoint=f"/v2/invoicing/invoices/{invoice_id}/send",
+            agent_toolkit_tool="send_invoice",
+            payload={"send_to_invoicer": False, "send_to_recipient": False},
+            summary_template=f"Issued Invoice {invoice_id} (payable, shareable link)",
+        )
+        telemetry_log.append(send_tel)
+
+        # Call 3b [Invoices v2 QR Code]: Generate mobile scannable QR code
         qr_res, qr_tel = self.client.invoke_sandbox_endpoint(
             pact_id=pact_id,
             api_family="Invoices v2 QR",
             http_method="POST",
             endpoint=f"/v2/invoicing/invoices/{invoice_id}/generate-qr-code",
             agent_toolkit_tool="generate_invoice_qr_code",
-            payload={"width": 300, "height": 300, "action": "pay"},
+            payload={"width": 300, "height": 300},
             summary_template="Generated PayPal Invoice QR Code {id}",
         )
         telemetry_log.append(qr_tel)
@@ -373,7 +412,7 @@ class PactPalClearinghouseEngine:
                     "negotiation_engine": negotiation_engine,
                     "invoice_id": invoice_id,
                     "order_id": order_id,
-                    "qr_code_svg_path": qr_res.get("qr_code_svg_path", "/api/qr/default.svg"),
+                    "qr_code_svg_path": qr_image_src(qr_res),
                     "mandate_verification": {"allowed": True, "reason": mandate_msg, "mandate": asdict(mandate)},
                     "negotiation_turns": [asdict(t) for t in turns],
                     "paypal_telemetry": [t.to_dict() for t in telemetry_log],
@@ -585,7 +624,7 @@ class PactPalClearinghouseEngine:
             "invoice_id": invoice_id,
             "order_id": order_id,
             "authorization_id": auth_id,
-            "qr_code_svg_path": qr_res.get("qr_code_svg_path", "/api/qr/default.svg"),
+            "qr_code_svg_path": qr_image_src(qr_res),
             "sla_verdict": asdict(verdict),
             "payout_splits": [asdict(s) for s in payout_splits],
             "dispute_courtroom": dispute_courtroom_record,

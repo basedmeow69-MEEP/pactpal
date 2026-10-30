@@ -23,7 +23,7 @@ def test_green_sla_full_capture_and_3_way_batch_payout(tmp_path: Path) -> None:
     assert len(res["payout_splits"]) == 3
     total_split = round(sum(s["amount_usd"] for s in res["payout_splits"]), 2)
     assert total_split == 372.00
-    assert len(res["paypal_telemetry"]) == 8
+    assert len(res["paypal_telemetry"]) == 9  # + invoice send step
 
 
 def test_amber_sla_autonomous_sandbox_dispute_courtroom_and_vault_replay(tmp_path: Path) -> None:
@@ -42,7 +42,7 @@ def test_amber_sla_autonomous_sandbox_dispute_courtroom_and_vault_replay(tmp_pat
     # 24% partial-cure refund on $390.00 = $93.60 refund, $296.40 net settlement
     assert res1["financial_summary"]["partial_cure_refund_usd"] == 93.60
     assert res1["financial_summary"]["final_net_settled_usd"] == 296.40
-    assert len(res1["paypal_telemetry"]) == 10
+    assert len(res1["paypal_telemetry"]) == 11  # + invoice send step
 
     # Second identical execution must hit SHA-256 Replay Vault 100% of the time
     res2 = engine.execute_pact_lifecycle(
