@@ -43,6 +43,7 @@ def test_seller_cannot_offer_below_floor():
 
 
 def test_refusal_or_error_falls_back_to_scripted_negotiation(monkeypatch, tmp_path: Path):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
     monkeypatch.setattr(negotiation_agents, "_claude_offer_fn", lambda: (lambda s, t: None))
     client = PayPalSandboxClient(client_id="", client_secret="", mode="hybrid", vault_path=tmp_path / "v.json")
     res = PactPalClearinghouseEngine(client=client, use_claude_agents=True).execute_pact_lifecycle(sla_outcome_mode="green_payout")
@@ -51,11 +52,12 @@ def test_refusal_or_error_falls_back_to_scripted_negotiation(monkeypatch, tmp_pa
 
 
 def test_claude_price_flows_into_invoice_and_scaled_line_items(monkeypatch, tmp_path: Path):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
     monkeypatch.setattr(negotiation_agents, "_claude_offer_fn",
                         lambda: scripted_offers(offer(480), offer(400.10), offer(0, accept=True)))
     client = PayPalSandboxClient(client_id="", client_secret="", mode="hybrid", vault_path=tmp_path / "v.json")
     res = PactPalClearinghouseEngine(client=client, use_claude_agents=True).execute_pact_lifecycle(sla_outcome_mode="green_payout")
-    assert res["negotiation_engine"] == negotiation_agents.CLAUDE_MODEL
+    assert res["negotiation_engine"] == negotiation_agents.ai_model_label()
     assert res["financial_summary"]["final_net_settled_usd"] == 400.10
     items = res["paypal_telemetry"][0]["raw_Preview"]
     invoice_payload_total = sum(float(i["unit_amount"]["value"]) for i in
@@ -163,3 +165,26 @@ def test_live_amber_waits_for_dispute_offers_in_inquiry_then_records_resolution(
     assert done["status"] == "RESOLVED_VIA_PARTIAL_CURE_COURTROOM"
     assert done["dispute_courtroom"]["net_merchant_settlement_usd"] == 296.40
     assert not any("require-evidence" in e or "adjudicate" in e for _, e, _ in sandbox.calls)
+
+
+def test_nvidia_backend_parses_offer_and_retries_malformed_reply(monkeypatch):
+    import httpx
+    replies = iter([
+        "Sure! Here is my offer: not json",
+        '{"price_usd": 405, "early_discount_pct": 6, "sla_guarantee_score": 92, "accept_counterparty_offer": false, "rationale": "fair"}',
+    ])
+    sent = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        sent.append(request)
+        return httpx.Response(200, json={"choices": [{"message": {"content": next(replies)}}]})
+
+    real_client = httpx.Client
+    monkeypatch.setattr(httpx, "Client", lambda **kw: real_client(transport=httpx.MockTransport(handler), **kw))
+    monkeypatch.setenv("NVIDIA_API_KEY", "nvapi-test")
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    assert negotiation_agents.ai_provider() == "nvidia"
+    offer = negotiation_agents._nvidia_offer_fn()("system", "transcript")
+    assert offer.price_usd == 405 and len(sent) == 2
+    assert sent[0].headers["Authorization"] == "Bearer nvapi-test"
+    assert sent[0].url.path == "/v1/chat/completions"

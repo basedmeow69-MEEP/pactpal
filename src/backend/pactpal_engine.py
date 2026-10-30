@@ -12,7 +12,7 @@ from src.apimatic_sdk.models import (
     PayoutRecipientSplit,
     SpendMandateToken,
 )
-from src.backend.negotiation_agents import CLAUDE_MODEL, claude_available, run_claude_negotiation
+from src.backend.negotiation_agents import ai_model_label, claude_available, run_claude_negotiation
 from src.backend.paypal_sandbox_client import PayPalSandboxClient, PayPalSandboxError
 
 
@@ -234,13 +234,13 @@ class PactPalClearinghouseEngine:
 
         # Stage 1: A2A Nash Negotiation (Claude buyer/seller agents when an Anthropic key is configured)
         turns, cond_rule = self.run_nash_negotiation(scenario)
-        negotiation_engine = "scripted (set ANTHROPIC_API_KEY for Claude agents)"
+        negotiation_engine = "scripted (set NVIDIA_API_KEY or ANTHROPIC_API_KEY for AI agents)"
         ai_deal = run_claude_negotiation({**scenario, "buyer_max_budget_usd": budget_cap}) if self.use_claude_agents else None
         if ai_deal:
             settled_usd = ai_deal["price_usd"]
             turns = [NegotiationTurn(**t) for t in ai_deal["turns"]]
             cond_rule.discount_percent = ai_deal["early_discount_pct"]
-            negotiation_engine = CLAUDE_MODEL
+            negotiation_engine = ai_model_label()
         line_items = self.scale_line_items(scenario["line_items"], settled_usd)
 
         # Stage 2: Mint & Verify Cryptographic SpendMandateToken
