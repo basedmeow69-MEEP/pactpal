@@ -1,0 +1,672 @@
+{
+ "pact_id": "PACT-2026-DERM-02-red1793402616",
+ "scenario_title": "Scenario 2: DermoTwin Biometric-Harmonized 5-Category Retail Escrow (Sprint 2 Bridge)",
+ "status": "VOIDED_SLA_FAILURE_FULL_BUYER_REFUND",
+ "negotiation_engine": "nvidia/nemotron-3.5-lightning-30b-a3b",
+ "financial_summary": {
+  "initial_ask_usd": 410.0,
+  "negotiated_invoice_usd": 353.4,
+  "buyer_refund_or_savings_usd": 410.0,
+  "partial_cure_refund_usd": 353.4,
+  "final_net_settled_usd": 0.0
+ },
+ "mandate_verification": {
+  "allowed": true,
+  "reason": "VERIFIED",
+  "mandate": {
+   "mandate_id": "MND-PACT-2026-DERM-02-red1793402616",
+   "buyer_agent_id": "agent.stylist.concierge@dermotwin.ai",
+   "allowed_merchant_email": "orders@atelier-vera-luxury.sandbox.paypal.com",
+   "max_budget_usd": 385.0,
+   "min_sla_score_for_full_capture": 90.0,
+   "currency_code": "USD",
+   "issued_at": 1793403126,
+   "expires_at": 1793489526,
+   "signature": "902acf695212c0d7a6270276427a77e766da51ab26d5b09b68a2ca8209338c21"
+  }
+ },
+ "negotiation_turns": [
+  {
+   "round_num": 1,
+   "speaker_agent": "Seller Deal-Desk Agent (nemotron-3.5-lightning-30b-a3b)",
+   "role_badge": "MERCHANT_AI",
+   "proposed_price_usd": 385.0,
+   "early_discount_pct": 0.0,
+   "sla_guarantee_score": 95.0,
+   "rationale": "Opening offer at 95% of list price secures immediate margin while leaving room for early-settlement incentives."
+  },
+  {
+   "round_num": 2,
+   "speaker_agent": "Buyer Procurement Agent (nemotron-3.5-lightning-30b-a3b)",
+   "role_badge": "BUYER_AI",
+   "proposed_price_usd": 330.0,
+   "early_discount_pct": 5.0,
+   "sla_guarantee_score": 92.0,
+   "rationale": "Opening below the cap at $330 secures room for early-settlement concessions while the 92% SLA reflects Aura's Skin AI verification risk and Lumen's premium material cost. A 5% early-discount incentive aligns with PayPal escrow timing without eroding margin."
+  },
+  {
+   "round_num": 3,
+   "speaker_agent": "Seller Deal-Desk Agent (nemotron-3.5-lightning-30b-a3b)",
+   "role_badge": "MERCHANT_AI",
+   "proposed_price_usd": 368.0,
+   "early_discount_pct": 3.0,
+   "sla_guarantee_score": 93.0,
+   "rationale": "The proposed $368 price reflects a 10% reduction from list, balancing Aura's Skin AI risk and Lumen's material costs while preserving margin. A 3% early-discount incentive is sufficient to align with PayPal escrow timing, and the SLA guarantee of 93% addresses the buyer's risk concerns without overcommitting."
+  },
+  {
+   "round_num": 4,
+   "speaker_agent": "Buyer Procurement Agent (nemotron-3.5-lightning-30b-a3b)",
+   "role_badge": "BUYER_AI",
+   "proposed_price_usd": 345.0,
+   "early_discount_pct": 4.0,
+   "sla_guarantee_score": 92.0,
+   "rationale": "The $368 offer exceeds your $385 cap with only a 3% early discount and SLA 93. Your counter of $345 at 4% discount and 92% SLA preserves margin while addressing Skin AI verification risk and PayPal escrow timing, leaving room for final concession if needed."
+  },
+  {
+   "round_num": 5,
+   "speaker_agent": "Seller Deal-Desk Agent (nemotron-3.5-lightning-30b-a3b)",
+   "role_badge": "MERCHANT_AI",
+   "proposed_price_usd": 353.4,
+   "early_discount_pct": 2.0,
+   "sla_guarantee_score": 94.0,
+   "rationale": "The $353.40 price respects your floor while the 2% early-discount and 94% SLA guarantee balance Aura's Skin AI verification risk with PayPal escrow timing, creating a narrow but viable path to closure."
+  },
+  {
+   "round_num": 6,
+   "speaker_agent": "Buyer Procurement Agent (nemotron-3.5-lightning-30b-a3b)",
+   "role_badge": "BUYER_AI",
+   "proposed_price_usd": 340.0,
+   "early_discount_pct": 3.5,
+   "sla_guarantee_score": 92.0,
+   "rationale": "The $340 offer at 3.5% early discount and 92% SLA guarantee respects your floor while balancing Aura's Skin AI verification risk with Lumen's material costs. It improves upon your 2% discount and 94% SLA proposal, creating a narrow but viable path to closure within the $385 cap."
+  },
+  {
+   "round_num": 7,
+   "speaker_agent": "Nash Clearinghouse Mediator",
+   "role_badge": "PACT_LOCKED",
+   "proposed_price_usd": 353.4,
+   "early_discount_pct": 2.8,
+   "sla_guarantee_score": 90.0,
+   "rationale": "Nash mediator split the remaining gap within both mandates at $353.40 USD with a 2.8% early-settlement conditional rule."
+  }
+ ],
+ "conditional_invoice_rule": {
+  "rule_type": "EARLY_PAYMENT_AND_SLA_ESCROW_RULE",
+  "trigger_condition": "SLA_SCORE_GE_90_WITHIN_24H",
+  "discount_percent": 2.8,
+  "auto_cancel_after_hours": 48,
+  "pay_by_bank_enabled": true
+ },
+ "invoice_id": "INV2-3AHS-ZZPZ-AJU2-SCUK",
+ "order_id": "0G419337H3984125W",
+ "authorization_id": "559694531V423780Y",
+ "qr_code_svg_path": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsAQAAAABRBrPYAAACPklEQVR4Xu2XQW7FIAxEnVWOwU0h3DRH6JIV7oxN+n9QpXZTVbGwECLwWGQ8hkT0N/Eh88y3sbApFjbFwqZY2BQLm+IvsC6MomfeT9n5uPkYscfCOOZ8aQnjqgSwq4ylSBh08EmStaVDEjeK5IiYT9YmmWrocc3Ew0pLynSfGzTR18ZYmFqi07FDBzcANHEzxMKEkaHAvXE2Fjai4WTGloSGinYpPMJgFISvD2/rgVpubHyk20NhkEJob/ochUxMh729D4N1SYrz6uKrXUOAzeqhMI9u9u6vTymdU/98DEvKWsbSKTTAMDlUknfdAmBiGR/ehskpi7bX8RUH4xgm5+v7GPs2M/ms2/OxTnuTLI1WpxTs4YdYmPDDKRPjZZSxhRXN+Zsgz8fUdfBChge+SpsqhcI4pqXZF/N2YWlz11wLD8cUalzGPizpmEFXlWYIhSH1nLF0j9LWyjv3dnBFwJhoMwD/04Eh4wa0ey08H+v8gT3l+o2FDsXdzuoOhSlPKuQaPXSgsavtJR8L61yiwzem3tUwidhiYahfK+Fuua4tqVV34WIszAThu5sHut2/W5NZkBBYpiaoX7uMBkyrHwExfmBgIOOw4uA7QZ6NefQ3IBvQrUXCAHDpuoywVO3gcjgUxjGOqVHUFzbUiIVhla+/jfrlfcTYsTciJjy7IMghNLk13xUQ04ZPCx7RWTjgZDQMnQuS/LFa9rPdR6EwYRCDz6kGBjAAtkCoUNiPsbApFjbFwqZY2BQLm+J/sE/7eAEBT7+iYwAAAABJRU5ErkJggg==",
+ "sla_verdict": {
+  "overall_sla_score": 41.0,
+  "epistemic_zone": "RED_AUTO_VOID",
+  "checks_passed": [
+   "Tracking payload received via PayPal Tracker API"
+  ],
+  "checks_failed": [
+   "SLA Breach #1: Deliverable failed 29 of 50 validation items (58% defect ratio)",
+   "SLA Breach #2: Delivery landed 31h after the contracted 24h window"
+  ],
+  "defect_ratio": 1.0,
+  "recommended_partial_refund_usd": 353.4,
+  "net_merchant_capture_usd": 0.0
+ },
+ "payout_splits": [],
+ "dispute_courtroom": null,
+ "paypal_telemetry": [
+  {
+   "step_order": 7,
+   "api_family": "Invoices v2",
+   "http_method": "POST",
+   "endpoint": "/v2/invoicing/invoices",
+   "agent_toolkit_tool": "create_invoice",
+   "paypal_request_id": "7cd697d6c4c6af4eb2f52802137c96a49739",
+   "resource_id": "INV2-3AHS-ZZPZ-AJU2-SCUK",
+   "status_code": 201,
+   "cache_hit": true,
+   "latency_ms": 0.04,
+   "summary": "Created PayPal Sandbox Invoice INV2-3AHS-ZZPZ-AJU2-SCUK with PAY_BY_BANK enabled",
+   "raw_Preview": {
+    "id": "INV2-3AHS-ZZPZ-AJU2-SCUK",
+    "status": "DRAFT",
+    "detail": {
+     "currency_code": "USD",
+     "note": "PactPal A2A Contract PACT-2026-DERM-02-red1793402616",
+     "category_code": "SHIPPABLE",
+     "invoice_number": "0009",
+     "invoice_date": "2026-10-30",
+     "payment_term": {
+      "term_type": "NO_DUE_DATE"
+     },
+     "viewed_by_recipient": false,
+     "group_draft": false,
+     "metadata": {
+      "create_time": "2026-10-30T23:24:09Z",
+      "last_update_time": "2026-10-30T23:24:09Z",
+      "created_by_flow": "REGULAR_SINGLE",
+      "recipient_view_url": "https://www.sandbox.paypal.com/invoice/p/#3AHSZZPZAJU2SCUK",
+      "invoicer_view_url": "https://www.sandbox.paypal.com/invoice/details/INV2-3AHS-ZZPZ-AJU2-SCUK",
+      "caller_type": "API_V2_INVOICE",
+      "spam_info": {}
+     },
+     "archived": false
+    },
+    "invoicer": {
+     "business_name": "PactPal Seller Deal-Desk"
+    },
+    "items": [
+     {
+      "id": "ITEM-305420261U116462C",
+      "name": "Aura Labs Panthenol + Cica Barrier Duo (Skin AI Verified)",
+      "quantity": "1",
+      "unit_amount": {
+       "currency_code": "USD",
+       "value": "77.90"
+      }
+     },
+     {
+      "id": "ITEM-3JH8777692300425H",
+      "name": "Atelier Vera Sage-Emerald Cashmere Drape + Satin Look Duo",
+      "quantity": "1",
+      "unit_amount": {
+       "currency_code": "USD",
+       "value": "193.80"
+      }
+     },
+     {
+      "id": "ITEM-0GT82190HS565493A",
+      "name": "Lumen 18K Brushed Gold Pearl Drop Earrings",
+      "quantity": "1",
+      "unit_amount": {
+       "currency_code": "USD",
+       "value": "81.70"
+      }
+     }
+    ],
+    "configuration": {
+     "tax_calculated_after_discount": false,
+     "tax_inclusive": false,
+     "allow_tip": false,
+     "allow_only_pay_by_bank": false,
+     "allow_vba_payments": false,
+     "save_item_for_future": true,
+     "template_id": "TEMP-34X08926X6995120S"
+    },
+    "amount": {
+     "breakdown": {
+      "item_total": {
+       "currency_code": "USD",
+       "value": "353.40"
+      },
+      "discount": {
+       "invoice_discount": {
+        "amount": {
+         "currency_code": "USD",
+         "value": "0.00"
+        }
+       },
+       "item_discount": {
+        "currency_code": "USD",
+        "value": "0.00"
+       }
+      },
+      "tax_total": {
+       "currency_code": "USD",
+       "value": "0.00"
+      }
+     },
+     "currency_code": "USD",
+     "value": "353.40"
+    },
+    "due_amount": {
+     "currency_code": "USD",
+     "value": "353.40"
+    },
+    "links": [
+     {
+      "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-3AHS-ZZPZ-AJU2-SCUK",
+      "rel": "self",
+      "method": "GET"
+     },
+     {
+      "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-3AHS-ZZPZ-AJU2-SCUK/send",
+      "rel": "send",
+      "method": "POST"
+     },
+     {
+      "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-3AHS-ZZPZ-AJU2-SCUK",
+      "rel": "replace",
+      "method": "PUT"
+     },
+     {
+      "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-3AHS-ZZPZ-AJU2-SCUK",
+      "rel": "delete",
+      "method": "DELETE"
+     },
+     {
+      "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-3AHS-ZZPZ-AJU2-SCUK/payments",
+      "rel": "record-payment",
+      "method": "POST"
+     }
+    ],
+    "unilateral": false,
+    "settings": {},
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
+   },
+   "source": "VAULT REPLAY (LIVE SANDBOX)"
+  },
+  {
+   "step_order": 8,
+   "api_family": "Invoices v2 Conditional Rules",
+   "http_method": "POST",
+   "endpoint": "/v2/invoicing/invoices/INV2-3AHS-ZZPZ-AJU2-SCUK/conditional-rules",
+   "agent_toolkit_tool": "create_conditional_rules_for_invoice",
+   "paypal_request_id": "b4cbe89230838ce8b0b6fa9cb7a11d51500f",
+   "resource_id": "FAILED",
+   "status_code": 500,
+   "cache_hit": false,
+   "latency_ms": 1172.66,
+   "summary": "FAILED: PayPal Sandbox returned HTTP 500",
+   "raw_Preview": {
+    "name": "INTERNAL_SERVER_ERROR",
+    "message": "An internal server error has occurred.",
+    "debug_id": "f2091656f16a6",
+    "details": [],
+    "links": []
+   },
+   "source": "LIVE SANDBOX"
+  },
+  {
+   "step_order": 9,
+   "api_family": "Invoices v2 Send",
+   "http_method": "POST",
+   "endpoint": "/v2/invoicing/invoices/INV2-3AHS-ZZPZ-AJU2-SCUK/send",
+   "agent_toolkit_tool": "send_invoice",
+   "paypal_request_id": "52080aca4b69c29a99973d20e7f8b7a65b2e",
+   "resource_id": "INV2-3AHS-ZZPZ-AJU2-SCUK",
+   "status_code": 200,
+   "cache_hit": true,
+   "latency_ms": 0.05,
+   "summary": "Issued Invoice INV2-3AHS-ZZPZ-AJU2-SCUK (payable, shareable link)",
+   "raw_Preview": {
+    "href": "https://www.sandbox.paypal.com/invoice/p/#INV2-3AHS-ZZPZ-AJU2-SCUK",
+    "rel": "payer-view",
+    "method": "GET",
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX",
+    "id": "INV2-3AHS-ZZPZ-AJU2-SCUK"
+   },
+   "source": "VAULT REPLAY (LIVE SANDBOX)"
+  },
+  {
+   "step_order": 10,
+   "api_family": "Invoices v2 QR",
+   "http_method": "POST",
+   "endpoint": "/v2/invoicing/invoices/INV2-3AHS-ZZPZ-AJU2-SCUK/generate-qr-code",
+   "agent_toolkit_tool": "generate_invoice_qr_code",
+   "paypal_request_id": "95a669a2e25c2c99df0d18945045898e8468",
+   "resource_id": "PP-95A669A2E2",
+   "status_code": 200,
+   "cache_hit": true,
+   "latency_ms": 0.03,
+   "summary": "Generated PayPal Invoice QR Code PP-95A669A2E2",
+   "raw_Preview": {
+    "qr_png_base64": "--b291f76b-8fa4-410b-8080-9cac2533a094\r\nContent-Disposition: form-data; name=\"image\"\r\nContent-Type: text/plain\r\n\r\niVBORw0KGgoAAAANSUhEUgAAASwAAAEsAQAAAABRBrPYAAACPklEQVR4Xu2XQW7FIAxEnVWOwU0h3DRH6JIV7oxN+n9QpXZTVbGwECLwWGQ8hkT0N/Eh88y3sbApFjbFwqZY2BQLm+IvsC6MomfeT9n5uPkYscfCOOZ8aQnjqgSwq4ylSBh08EmStaVDEjeK5IiYT9YmmWrocc3Ew0pLynSfGzTR18ZYmFqi07FDBzcANHEzxMKEkaHAvXE2Fjai4WTGloSGinYpPMJgFISvD2/rgVpubHyk20NhkEJob/ochUxMh729D4N1SYrz6uKrXUOAzeqhMI9u9u6vTymdU/98DEvKWsbSKTTAMDlUknfdAmBiGR/ehskpi7bX8RUH4xgm5+v7GPs2M/ms2/OxTnuTLI1WpxTs4YdYmPDDKRPjZZSxhRXN+Zsgz8fUdfBChge+SpsqhcI4pqXZF/N2YWlz11wLD8cUalzGPizpmEFXlWYIhSH1nLF0j9LWyjv3dnBFwJhoMwD/04Eh4wa0ey08H+v8gT3l+o2FDsXdzuoOhSlPKuQaPXSgsavtJR8L61yiwzem3tUwidhiYahfK+Fuua4tqVV34WIszAThu5sHut2/W5NZkBBYpiaoX7uMBkyrHwExfmBgIOOw4uA7QZ6NefQ3IBvQrUXCAHDpuoywVO3gcjgUxjGOqVHUFzbUiIVhla+/jfrlfcTYsTciJjy7IMghNLk13xUQ04ZPCx7RWTjgZDQMnQuS/LFa9rPdR6EwYRCDz6kGBjAAtkCoUNiPsbApFjbFwqZY2BQLm+J/sE/7eAEBT7+iYwAAAABJRU5ErkJggg==\r\n--b291f76b-8fa4-410b-8080-9cac2533a094--",
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX",
+    "id": "PP-95A669A2E2"
+   },
+   "source": "VAULT REPLAY (LIVE SANDBOX)"
+  },
+  {
+   "step_order": 11,
+   "api_family": "Orders v2",
+   "http_method": "POST",
+   "endpoint": "/v2/checkout/orders",
+   "agent_toolkit_tool": "create_order",
+   "paypal_request_id": "10e0ce30b4299da89938ec8c2e495d71c847",
+   "resource_id": "0G419337H3984125W",
+   "status_code": 201,
+   "cache_hit": true,
+   "latency_ms": 0.03,
+   "summary": "Created PayPal Order 0G419337H3984125W (intent=AUTHORIZE)",
+   "raw_Preview": {
+    "id": "0G419337H3984125W",
+    "intent": "AUTHORIZE",
+    "status": "CREATED",
+    "purchase_units": [
+     {
+      "reference_id": "PACT-2026-DERM-02-red1793402616",
+      "amount": {
+       "currency_code": "USD",
+       "value": "353.40"
+      },
+      "payee": {
+       "email_address": "sb-tmbkq53634617@business.example.com",
+       "merchant_id": "HFPMFGXK8CZYJ"
+      },
+      "custom_id": "MND-PACT-2026-DERM-02-red1793402616"
+     }
+    ],
+    "create_time": "2026-10-30T23:24:15Z",
+    "links": [
+     {
+      "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W",
+      "rel": "self",
+      "method": "GET"
+     },
+     {
+      "href": "https://www.sandbox.paypal.com/checkoutnow?token=0G419337H3984125W",
+      "rel": "approve",
+      "method": "GET"
+     },
+     {
+      "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W",
+      "rel": "update",
+      "method": "PATCH"
+     },
+     {
+      "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W/authorize",
+      "rel": "authorize",
+      "method": "POST"
+     }
+    ],
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
+   },
+   "source": "VAULT REPLAY (LIVE SANDBOX)"
+  },
+  {
+   "step_order": 12,
+   "api_family": "Orders v2",
+   "http_method": "GET",
+   "endpoint": "/v2/checkout/orders/0G419337H3984125W",
+   "agent_toolkit_tool": "get_order",
+   "paypal_request_id": "49604f65e3e321da7718ef2e2b6936448080",
+   "resource_id": "0G419337H3984125W",
+   "status_code": 200,
+   "cache_hit": false,
+   "latency_ms": 584.45,
+   "summary": "Checked buyer approval for Order 0G419337H3984125W",
+   "raw_Preview": {
+    "id": "0G419337H3984125W",
+    "intent": "AUTHORIZE",
+    "status": "APPROVED",
+    "payment_source": {
+     "paypal": {
+      "email_address": "sb-ynoye53637513@personal.example.com",
+      "account_id": "BUAYZ5FVXRG22",
+      "account_status": "VERIFIED",
+      "name": {
+       "given_name": "John",
+       "surname": "Doe"
+      },
+      "address": {
+       "country_code": "US"
+      }
+     }
+    },
+    "purchase_units": [
+     {
+      "reference_id": "PACT-2026-DERM-02-red1793402616",
+      "amount": {
+       "currency_code": "USD",
+       "value": "353.40",
+       "breakdown": {}
+      },
+      "payee": {
+       "email_address": "sb-tmbkq53634617@business.example.com",
+       "merchant_id": "HFPMFGXK8CZYJ"
+      },
+      "custom_id": "MND-PACT-2026-DERM-02-red1793402616",
+      "shipping": {
+       "name": {
+        "full_name": "John Doe"
+       },
+       "address": {
+        "address_line_1": "2211 N First St",
+        "admin_area_2": "San Jose",
+        "admin_area_1": "CA",
+        "postal_code": "95131",
+        "country_code": "US"
+       }
+      }
+     }
+    ],
+    "payer": {
+     "name": {
+      "given_name": "John",
+      "surname": "Doe"
+     },
+     "email_address": "sb-ynoye53637513@personal.example.com",
+     "payer_id": "BUAYZ5FVXRG22",
+     "address": {
+      "country_code": "US"
+     }
+    },
+    "create_time": "2026-10-30T23:24:15Z",
+    "links": [
+     {
+      "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W",
+      "rel": "self",
+      "method": "GET"
+     },
+     {
+      "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W/authorize",
+      "rel": "authorize",
+      "method": "POST"
+     },
+     {
+      "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W",
+      "rel": "update",
+      "method": "PATCH"
+     }
+    ],
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX"
+   },
+   "source": "LIVE SANDBOX"
+  },
+  {
+   "step_order": 13,
+   "api_family": "Orders v2 Auth Hold",
+   "http_method": "POST",
+   "endpoint": "/v2/checkout/orders/0G419337H3984125W/authorize",
+   "agent_toolkit_tool": "pay_order",
+   "paypal_request_id": "94b3fbe448f54e067e12cfcd31d2ea7c8e7c",
+   "resource_id": "0G419337H3984125W",
+   "status_code": 201,
+   "cache_hit": false,
+   "latency_ms": 1604.66,
+   "summary": "Locked Escrow Authorization Hold 0G419337H3984125W ($353.40)",
+   "raw_Preview": {
+    "id": "0G419337H3984125W",
+    "intent": "AUTHORIZE",
+    "status": "COMPLETED",
+    "payment_source": {
+     "paypal": {
+      "email_address": "sb-ynoye53637513@personal.example.com",
+      "account_id": "BUAYZ5FVXRG22",
+      "account_status": "VERIFIED",
+      "name": {
+       "given_name": "John",
+       "surname": "Doe"
+      },
+      "address": {
+       "country_code": "US"
+      }
+     }
+    },
+    "purchase_units": [
+     {
+      "reference_id": "PACT-2026-DERM-02-red1793402616",
+      "amount": {
+       "currency_code": "USD",
+       "value": "353.40"
+      },
+      "payee": {
+       "email_address": "sb-tmbkq53634617@business.example.com",
+       "merchant_id": "HFPMFGXK8CZYJ"
+      },
+      "custom_id": "MND-PACT-2026-DERM-02-red1793402616",
+      "shipping": {
+       "name": {
+        "full_name": "John Doe"
+       },
+       "address": {
+        "address_line_1": "2211 N First St",
+        "admin_area_2": "San Jose",
+        "admin_area_1": "CA",
+        "postal_code": "95131",
+        "country_code": "US"
+       }
+      },
+      "payments": {
+       "authorizations": [
+        {
+         "status": "CREATED",
+         "id": "559694531V423780Y",
+         "amount": {
+          "currency_code": "USD",
+          "value": "353.40"
+         },
+         "custom_id": "MND-PACT-2026-DERM-02-red1793402616",
+         "seller_protection": {
+          "status": "ELIGIBLE",
+          "dispute_categories": [
+           "ITEM_NOT_RECEIVED",
+           "UNAUTHORIZED_TRANSACTION"
+          ]
+         },
+         "expiration_time": "2026-11-28T23:32:08Z",
+         "links": [
+          {
+           "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/559694531V423780Y",
+           "rel": "self",
+           "method": "GET"
+          },
+          {
+           "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/559694531V423780Y/capture",
+           "rel": "capture",
+           "method": "POST"
+          },
+          {
+           "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/559694531V423780Y/void",
+           "rel": "void",
+           "method": "POST"
+          },
+          {
+           "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/559694531V423780Y/reauthorize",
+           "rel": "reauthorize",
+           "method": "POST"
+          },
+          {
+           "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W",
+           "rel": "up",
+           "method": "GET"
+          }
+         ],
+         "create_time": "2026-10-30T23:32:08Z",
+         "update_time": "2026-10-30T23:32:08Z"
+        }
+       ]
+      }
+     }
+    ],
+    "payer": {
+     "name": {
+      "given_name": "John",
+      "surname": "Doe"
+     },
+     "email_address": "sb-ynoye53637513@personal.example.com",
+     "payer_id": "BUAYZ5FVXRG22",
+     "address": {
+      "country_code": "US"
+     }
+    },
+    "create_time": "2026-10-30T23:24:15Z",
+    "update_time": "2026-10-30T23:32:09Z",
+    "links": [
+     {
+      "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W",
+      "rel": "self",
+      "method": "GET"
+     }
+    ],
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
+   },
+   "source": "LIVE SANDBOX"
+  },
+  {
+   "step_order": 14,
+   "api_family": "Payments v2 Void",
+   "http_method": "POST",
+   "endpoint": "/v2/payments/authorizations/559694531V423780Y/void",
+   "agent_toolkit_tool": "void_authorization",
+   "paypal_request_id": "42e1dddc9daf1bd1d5aaa75ab43701b26cf0",
+   "resource_id": "559694531V423780Y",
+   "status_code": 200,
+   "cache_hit": false,
+   "latency_ms": 1122.89,
+   "summary": "Voided Escrow Authorization 559694531V423780Y: $353.40 released to buyer",
+   "raw_Preview": {
+    "id": "559694531V423780Y",
+    "status": "VOIDED",
+    "amount": {
+     "currency_code": "USD",
+     "value": "353.40"
+    },
+    "seller_protection": {
+     "status": "ELIGIBLE",
+     "dispute_categories": [
+      "ITEM_NOT_RECEIVED",
+      "UNAUTHORIZED_TRANSACTION"
+     ]
+    },
+    "expiration_time": "2026-11-28T15:32:08-08:00",
+    "create_time": "2026-10-30T16:32:08-07:00",
+    "update_time": "2026-10-30T16:32:10-07:00",
+    "links": [
+     {
+      "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/559694531V423780Y",
+      "rel": "self",
+      "method": "GET"
+     }
+    ],
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX"
+   },
+   "source": "LIVE SANDBOX"
+  },
+  {
+   "step_order": 15,
+   "api_family": "Invoices v2 Cancel",
+   "http_method": "POST",
+   "endpoint": "/v2/invoicing/invoices/INV2-3AHS-ZZPZ-AJU2-SCUK/cancel",
+   "agent_toolkit_tool": "cancel_sent_invoice",
+   "paypal_request_id": "f137d96d2d086e2916cd865c3564534b5f25",
+   "resource_id": "INV2-3AHS-ZZPZ-AJU2-SCUK",
+   "status_code": 200,
+   "cache_hit": false,
+   "latency_ms": 1312.81,
+   "summary": "Cancelled Invoice INV2-3AHS-ZZPZ-AJU2-SCUK after SLA failure",
+   "raw_Preview": {
+    "id": "INV2-3AHS-ZZPZ-AJU2-SCUK",
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX"
+   },
+   "source": "LIVE SANDBOX"
+  }
+ ],
+ "recorded": {
+  "recorded_on": "2026-10-30",
+  "environment": "PayPal Sandbox (api-m.sandbox.paypal.com)",
+  "note": "Replay of a real live Sandbox run; buyer steps were done by a Sandbox Personal account."
+ }
+}

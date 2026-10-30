@@ -54,6 +54,26 @@ class PactPalClearinghouseEngine:
         self.client = client or PayPalSandboxClient()
         self.use_claude_agents = claude_available() if use_claude_agents is None else use_claude_agents
 
+    def _buyer_return_context(self, pact_id: str) -> dict[str, Any]:
+        """Send the live Sandbox buyer back to PactPal after approving, so the pact can continue."""
+        base = getattr(self, "return_base_url", None)
+        if not (base and self.client.is_live):
+            return {}
+        base = base.rstrip("/")
+        return {
+            "payment_source": {
+                "paypal": {
+                    "experience_context": {
+                        "return_url": f"{base}/approved?pact={pact_id}",
+                        "cancel_url": f"{base}/approved?pact={pact_id}&cancelled=1",
+                        "user_action": "CONTINUE",
+                        "shipping_preference": "NO_SHIPPING",
+                        "brand_name": "PactPal",
+                    }
+                }
+            }
+        }
+
     @staticmethod
     def scale_line_items(items: list[dict[str, Any]], total_usd: float) -> list[dict[str, Any]]:
         """Rescale line items so the invoice total matches the negotiated price to the cent."""
@@ -219,12 +239,14 @@ class PactPalClearinghouseEngine:
         sla_outcome_mode: str | None = None,
         override_budget_cap_usd: float | None = None,
         run_id: str | None = None,
+        return_base_url: str | None = None,
     ) -> dict[str, Any]:
         """Run the complete 5-Stage PactPal lifecycle across PayPal Sandbox APIs.
 
         run_id makes each demo run a distinct pact (fresh PayPal-Request-Ids); repeating a run_id
         resumes it idempotently, which is how a run continues after buyer approval.
         """
+        self.return_base_url = return_base_url
         scenarios = self.get_scenarios()
         scenario = scenarios.get(scenario_key, scenarios["b2b_gpu_inference_cluster"])
         pact_id = f"{scenario['pact_id']}-{run_id}" if run_id else scenario["pact_id"]
@@ -424,6 +446,7 @@ class PactPalClearinghouseEngine:
                         "amount": {"currency_code": "USD", "value": f"{settled_usd:.2f}"},
                     }
                 ],
+                **self._buyer_return_context(pact_id),
             },
             summary_template="Created PayPal Order {id} (intent=AUTHORIZE)",
         )

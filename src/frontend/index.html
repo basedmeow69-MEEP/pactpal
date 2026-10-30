@@ -36,6 +36,13 @@
   </header>
 
   <main class="max-w-7xl mx-auto p-6 space-y-6">
+    <section class="flex flex-wrap items-center gap-2 text-xs font-mono">
+      <span class="text-slate-400">Replay a recorded live Sandbox run (no credentials needed):</span>
+      <button onclick="replayRecorded('path_a_capture_payout')" class="px-2.5 py-1 rounded border border-emerald-600 text-emerald-300 hover:bg-emerald-600/20">A · capture + payout</button>
+      <button onclick="replayRecorded('path_b_dispute_partial_refund')" class="px-2.5 py-1 rounded border border-amber-600 text-amber-300 hover:bg-amber-600/20">B · real dispute, $93.60 partial refund</button>
+      <button onclick="replayRecorded('path_c_void_cancel')" class="px-2.5 py-1 rounded border border-rose-600 text-rose-300 hover:bg-rose-600/20">C · void + cancel</button>
+    </section>
+    <div id="recordedBanner" class="hidden rounded-lg border border-violet-500/40 bg-violet-500/10 text-violet-200 text-xs font-mono px-4 py-2"></div>
     <!-- Top KPI Banner -->
     <section class="grid grid-cols-1 md:grid-cols-4 gap-4" id="kpiGrid">
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
@@ -100,6 +107,13 @@
   <script>
     let gridApi = null;
     let currentRun = null;
+    let awaitingApproval = false;
+    // The /approved return page broadcasts when the Sandbox buyer finishes checkout.
+    try {
+      new BroadcastChannel("pactpal").onmessage = e => {
+        if (awaitingApproval && e.data.outcome === "approved") { awaitingApproval = false; runPact(null, true); }
+      };
+    } catch (e) {}
     const esc = v => String(v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
     function renderTurns(turns) {
@@ -152,10 +166,28 @@
 
       const res = await fetch("/api/execute-pact", { method: "POST", body: form });
       const data = await res.json();
+      renderResult(data);
+    }
+
+    async function replayRecorded(name) {
+      currentRun = null;
+      const res = await fetch(`/api/recorded-runs/${encodeURIComponent(name)}`);
+      renderResult(await res.json());
+    }
+
+    function renderResult(data) {
+      const banner = document.getElementById("recordedBanner");
+      if (data.recorded) {
+        banner.textContent = `RECORDED LIVE SANDBOX RUN · ${data.recorded.recorded_on} · ${data.recorded.note}`;
+        banner.classList.remove("hidden");
+      } else {
+        banner.classList.add("hidden");
+      }
       document.getElementById("engineBadge").textContent = `Negotiation engine: ${data.negotiation_engine || "--"}`;
       gridApi.setGridOption("rowData", data.paypal_telemetry || []);
       document.getElementById("kpiStatus").textContent = data.status;
       if (data.status === "AWAITING_BUYER_APPROVAL") {
+        awaitingApproval = true;
         document.getElementById("kpiStatus").className = "text-lg font-bold text-amber-400 mt-1";
         document.getElementById("kpiInvoiceId").textContent = `Invoice: ${data.invoice_id} | Order: ${data.order_id}`;
         renderTurns(data.negotiation_turns);

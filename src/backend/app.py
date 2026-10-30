@@ -1,10 +1,11 @@
 """FastAPI Server for PactPal (PayPal AI Hackathon - Autonomous Clearinghouse & Dispute Courtroom)."""
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, Response
 
@@ -39,6 +40,7 @@ async def list_scenarios() -> JSONResponse:
 
 @app.post("/api/execute-pact")
 async def execute_pact(
+    request: Request,
     scenario_key: str = Form("b2b_gpu_inference_cluster"),
     sla_outcome_mode: str = Form("amber_dispute"),
     override_budget_cap_usd: float | None = Form(None),
@@ -49,8 +51,42 @@ async def execute_pact(
         sla_outcome_mode=sla_outcome_mode,
         override_budget_cap_usd=override_budget_cap_usd,
         run_id=run_id,
+        return_base_url=str(request.base_url),
     )
     return JSONResponse(result)
+
+
+@app.get("/approved", response_class=HTMLResponse)
+async def buyer_returned(pact: str = "", cancelled: str = "") -> HTMLResponse:
+    """PayPal return_url: tell the PactPal tab the buyer finished, then let the buyer close this tab."""
+    outcome = "cancelled" if cancelled else "approved"
+    payload = json.dumps({"outcome": outcome, "pact": pact[:120]}).replace("<", "\\u003c")
+    message = "Payment cancelled." if cancelled else "Payment approved."
+    return HTMLResponse(f"""<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>PactPal</title></head>
+<body style="background:#020617;color:#e2e8f0;font-family:sans-serif;display:grid;place-items:center;height:100vh;margin:0">
+<div style="text-align:center"><h1 style="color:#34d399">{message}</h1>
+<p>PactPal is continuing the pact in its own tab. You can close this one.</p></div>
+<script>
+  try {{ new BroadcastChannel("pactpal").postMessage({payload}); }} catch (e) {{}}
+  setTimeout(() => window.close(), 1500);
+</script></body></html>""")
+
+
+RECORDED_RUNS = Path("vault/recorded_runs")
+
+
+@app.get("/api/recorded-runs")
+async def list_recorded_runs() -> JSONResponse:
+    """Real live-Sandbox runs saved for judges who run PactPal without PayPal credentials."""
+    return JSONResponse(sorted(p.stem for p in RECORDED_RUNS.glob("*.json")))
+
+
+@app.get("/api/recorded-runs/{name}")
+async def get_recorded_run(name: str) -> JSONResponse:
+    path = RECORDED_RUNS / f"{name}.json"
+    if not name.replace("_", "").isalnum() or not path.exists():
+        return JSONResponse({"error": "unknown recorded run"}, status_code=404)
+    return JSONResponse(json.loads(path.read_text(encoding="utf-8")))
 
 
 @app.get("/api/mcp/tools")

@@ -188,3 +188,23 @@ def test_nvidia_backend_parses_offer_and_retries_malformed_reply(monkeypatch):
     assert offer.price_usd == 405 and len(sent) == 2
     assert sent[0].headers["Authorization"] == "Bearer nvapi-test"
     assert sent[0].url.path == "/v1/chat/completions"
+
+
+def test_approved_return_page_escapes_pact_param():
+    from fastapi.testclient import TestClient
+    from src.backend.app import app
+    html = TestClient(app).get("/approved", params={"pact": "</script><script>alert(1)</script>"}).text
+    assert "</script><script>alert(1)" not in html
+    assert "\\u003c/script>" in html
+
+
+def test_recorded_live_runs_are_served_and_labelled():
+    from fastapi.testclient import TestClient
+    from src.backend.app import app
+    client = TestClient(app)
+    names = client.get("/api/recorded-runs").json()
+    assert {"path_a_capture_payout", "path_b_dispute_partial_refund", "path_c_void_cancel"} <= set(names)
+    run = client.get("/api/recorded-runs/path_b_dispute_partial_refund").json()
+    assert run["recorded"]["environment"].startswith("PayPal Sandbox")
+    assert run["dispute_courtroom"]["partial_refund_usd"] == 93.60
+    assert client.get("/api/recorded-runs/..%2F.env").status_code == 404

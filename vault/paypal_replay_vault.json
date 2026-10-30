@@ -2889,5 +2889,490 @@
     "id": "INV2-3AHS-ZZPZ-AJU2-SCUK",
     "_http_status": 200,
     "_source": "LIVE SANDBOX"
+  },
+  "29037b5ea0cfcca0a8eda4532d5f744a7811": {
+    "id": "INV2-B4Y3-MYZP-N8FM-B7UB",
+    "status": "DRAFT",
+    "detail": {
+      "currency_code": "USD",
+      "note": "PactPal A2A Contract PACT-2026-GPU-01-ret1793403273",
+      "category_code": "SHIPPABLE",
+      "invoice_number": "0010",
+      "invoice_date": "2026-10-30",
+      "payment_term": {
+        "term_type": "NO_DUE_DATE"
+      },
+      "viewed_by_recipient": false,
+      "group_draft": false,
+      "metadata": {
+        "create_time": "2026-10-30T23:34:36Z",
+        "last_update_time": "2026-10-30T23:34:36Z",
+        "created_by_flow": "REGULAR_SINGLE",
+        "recipient_view_url": "https://www.sandbox.paypal.com/invoice/p/#B4Y3MYZPN8FMB7UB",
+        "invoicer_view_url": "https://www.sandbox.paypal.com/invoice/details/INV2-B4Y3-MYZP-N8FM-B7UB",
+        "caller_type": "API_V2_INVOICE",
+        "spam_info": {}
+      },
+      "archived": false
+    },
+    "invoicer": {
+      "business_name": "PactPal Seller Deal-Desk"
+    },
+    "items": [
+      {
+        "id": "ITEM-36K65367CA921431H",
+        "name": "LoRA Checkpoint Distillation (50k Rows)",
+        "quantity": "1",
+        "unit_amount": {
+          "currency_code": "USD",
+          "value": "240.00"
+        }
+      },
+      {
+        "id": "ITEM-38X53684FC604690W",
+        "name": "Dedicated Low-Latency Inference Slot (24h SLA <150ms)",
+        "quantity": "1",
+        "unit_amount": {
+          "currency_code": "USD",
+          "value": "150.00"
+        }
+      }
+    ],
+    "configuration": {
+      "tax_calculated_after_discount": false,
+      "tax_inclusive": false,
+      "allow_tip": false,
+      "allow_only_pay_by_bank": false,
+      "allow_vba_payments": false,
+      "save_item_for_future": true,
+      "template_id": "TEMP-34X08926X6995120S"
+    },
+    "amount": {
+      "breakdown": {
+        "item_total": {
+          "currency_code": "USD",
+          "value": "390.00"
+        },
+        "discount": {
+          "invoice_discount": {
+            "amount": {
+              "currency_code": "USD",
+              "value": "0.00"
+            }
+          },
+          "item_discount": {
+            "currency_code": "USD",
+            "value": "0.00"
+          }
+        },
+        "tax_total": {
+          "currency_code": "USD",
+          "value": "0.00"
+        }
+      },
+      "currency_code": "USD",
+      "value": "390.00"
+    },
+    "due_amount": {
+      "currency_code": "USD",
+      "value": "390.00"
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-B4Y3-MYZP-N8FM-B7UB",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-B4Y3-MYZP-N8FM-B7UB/send",
+        "rel": "send",
+        "method": "POST"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-B4Y3-MYZP-N8FM-B7UB",
+        "rel": "replace",
+        "method": "PUT"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-B4Y3-MYZP-N8FM-B7UB",
+        "rel": "delete",
+        "method": "DELETE"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-B4Y3-MYZP-N8FM-B7UB/payments",
+        "rel": "record-payment",
+        "method": "POST"
+      }
+    ],
+    "unilateral": false,
+    "settings": {},
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
+  },
+  "57655442e6f939d1df8640501a92f530675e": {
+    "href": "https://www.sandbox.paypal.com/invoice/p/#INV2-B4Y3-MYZP-N8FM-B7UB",
+    "rel": "payer-view",
+    "method": "GET",
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX",
+    "id": "INV2-B4Y3-MYZP-N8FM-B7UB"
+  },
+  "dc98ce02f2eeee7d80c2db15c3db9cdad8f3": {
+    "qr_png_base64": "--5c78e1ac-1b3b-474c-ac51-9be9d2df4c16\r\nContent-Disposition: form-data; name=\"image\"\r\nContent-Type: text/plain\r\n\r\niVBORw0KGgoAAAANSUhEUgAAASwAAAEsAQAAAABRBrPYAAACSklEQVR4Xu2XQW4kIQxFzYpjcFOgblpHmGWtcP7/VEfTzETJZjQqC6sUUfBoqZ+N6Zj/JH7ZOvPX2NgSG1tiY0tsbImNLfEvsGGMyqeM7Ief6So9n5zNsTCOT2DNT8xzl+B2L0XCsHrWfCbAAC5rF8xwYw2JWTncu7EAuoRExRpGF8lBJ18KeTjmLPIsG2RQ7RTS7qVAmDEqDLw/nI2F3XGVaSZdrPPfFuJgA3cQ+zOTXtW+mpKO13dvj8cgoemerTrUGDQBXbdwJGwKmZEEyIyc6FPiYJk3Eb4+OjPkVHqgkyQ4FAYAq/llRgUwuHE9C0/HnIXNx5l3HGcwsAEtzH4oDPcssmzsXT7TrVKfTDCsUgiyjwpXbVtx/eOzCHk6NpDumXSY8fNTxaFxKMxwiouEcKmS52vjJ4TCnNcu65yh+W7MPvbO5TDYoAdctbyMDlWCkbG0eHs+5qrtdNHA3AKm8fX2EwlLsuHqYDzF4ntehTwdG6/O3FgAzHg38oNnPBTmbFM3D+Zg78IbxxEx3Duoc/arzuYMkt3MYmFIsWiWNBjauDBz2ms+DObMMg2YscIBH1Ix8x4Lw/ktWi2sc/6FE2xBDYTCBhmtMtfQUpxjhZyEwWYMnV9JQMemE20Phc3v3pTozmuIWJ/nWhEH4yuPc70rfGJU9FYhETC8TsYIUM6npYAYlyRhFnmXnP6HkBhYNwixxJ/KVrN3/lQOhvkscgDTSeUzB7EwY3DJiB2aqar2t+P8fOzb2NgSG1tiY0tsbImNLfF/sA+hV/d0o4JTyAAAAABJRU5ErkJggg==\r\n--5c78e1ac-1b3b-474c-ac51-9be9d2df4c16--",
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX",
+    "id": "PP-DC98CE02F2"
+  },
+  "41f8fdb71cb53386554f0359d614b4ee0f42": {
+    "id": "47R44921C9497394J",
+    "intent": "AUTHORIZE",
+    "status": "PAYER_ACTION_REQUIRED",
+    "payment_source": {
+      "paypal": {}
+    },
+    "purchase_units": [
+      {
+        "reference_id": "PACT-2026-GPU-01-ret1793403273",
+        "amount": {
+          "currency_code": "USD",
+          "value": "390.00"
+        },
+        "payee": {
+          "email_address": "sb-tmbkq53634617@business.example.com",
+          "merchant_id": "HFPMFGXK8CZYJ",
+          "display_data": {
+            "brand_name": "PactPal"
+          }
+        },
+        "custom_id": "MND-PACT-2026-GPU-01-ret1793403273"
+      }
+    ],
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/47R44921C9497394J",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://www.sandbox.paypal.com/checkoutnow?token=47R44921C9497394J",
+        "rel": "payer-action",
+        "method": "GET"
+      }
+    ],
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX"
+  },
+  "002bc4340c299c41c7846a976623694f5e77": {
+    "id": "47R44921C9497394J",
+    "intent": "AUTHORIZE",
+    "status": "PAYER_ACTION_REQUIRED",
+    "payment_source": {
+      "paypal": {}
+    },
+    "purchase_units": [
+      {
+        "reference_id": "PACT-2026-GPU-01-ret1793403273",
+        "amount": {
+          "currency_code": "USD",
+          "value": "390.00",
+          "breakdown": {}
+        },
+        "payee": {
+          "email_address": "sb-tmbkq53634617@business.example.com",
+          "merchant_id": "HFPMFGXK8CZYJ",
+          "display_data": {
+            "brand_name": "PactPal"
+          }
+        },
+        "custom_id": "MND-PACT-2026-GPU-01-ret1793403273"
+      }
+    ],
+    "create_time": "2026-10-30T23:34:43Z",
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/47R44921C9497394J",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://www.sandbox.paypal.com/checkoutnow?token=47R44921C9497394J",
+        "rel": "payer-action",
+        "method": "GET"
+      }
+    ],
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX"
+  },
+  "683f45f61ddcce5220a86820a873fafd6f83": {
+    "id": "1TK548202F828453K",
+    "intent": "AUTHORIZE",
+    "status": "COMPLETED",
+    "payment_source": {
+      "paypal": {
+        "email_address": "sb-ynoye53637513@personal.example.com",
+        "account_id": "BUAYZ5FVXRG22",
+        "account_status": "VERIFIED",
+        "name": {
+          "given_name": "John",
+          "surname": "Doe"
+        },
+        "address": {
+          "country_code": "US"
+        }
+      }
+    },
+    "purchase_units": [
+      {
+        "reference_id": "PACT-2026-GPU-01-live1793391472",
+        "amount": {
+          "currency_code": "USD",
+          "value": "390.00"
+        },
+        "payee": {
+          "email_address": "sb-tmbkq53634617@business.example.com",
+          "merchant_id": "HFPMFGXK8CZYJ"
+        },
+        "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+        "shipping": {
+          "name": {
+            "full_name": "John Doe"
+          },
+          "address": {
+            "address_line_1": "2211 N First St",
+            "admin_area_2": "San Jose",
+            "admin_area_1": "CA",
+            "postal_code": "95131",
+            "country_code": "US"
+          }
+        },
+        "payments": {
+          "authorizations": [
+            {
+              "status": "CAPTURED",
+              "id": "84H15091MS304251H",
+              "amount": {
+                "currency_code": "USD",
+                "value": "390.00"
+              },
+              "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+              "seller_protection": {
+                "status": "ELIGIBLE",
+                "dispute_categories": [
+                  "ITEM_NOT_RECEIVED",
+                  "UNAUTHORIZED_TRANSACTION"
+                ]
+              },
+              "expiration_time": "2026-11-28T20:37:44Z",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H/capture",
+                  "rel": "capture",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H/void",
+                  "rel": "void",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H/reauthorize",
+                  "rel": "reauthorize",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/1TK548202F828453K",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-10-30T20:37:44Z",
+              "update_time": "2026-10-30T20:37:46Z"
+            }
+          ],
+          "captures": [
+            {
+              "id": "7XB25686Y40249606",
+              "status": "PARTIALLY_REFUNDED",
+              "amount": {
+                "currency_code": "USD",
+                "value": "390.00"
+              },
+              "final_capture": true,
+              "disbursement_mode": "INSTANT",
+              "seller_protection": {
+                "status": "ELIGIBLE",
+                "dispute_categories": [
+                  "ITEM_NOT_RECEIVED",
+                  "UNAUTHORIZED_TRANSACTION"
+                ]
+              },
+              "seller_receivable_breakdown": {
+                "gross_amount": {
+                  "currency_code": "USD",
+                  "value": "390.00"
+                },
+                "paypal_fee": {
+                  "currency_code": "USD",
+                  "value": "14.10"
+                },
+                "net_amount": {
+                  "currency_code": "USD",
+                  "value": "375.90"
+                }
+              },
+              "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/7XB25686Y40249606",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/7XB25686Y40249606/refund",
+                  "rel": "refund",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-10-30T20:37:46Z",
+              "update_time": "2026-10-30T23:02:42Z"
+            }
+          ],
+          "refunds": [
+            {
+              "id": "16538294U8745022L",
+              "amount": {
+                "currency_code": "USD",
+                "value": "93.60"
+              },
+              "note_to_payer": "93.6 USD; 2026-10-30 Credit has been processed and claim is now closed. Please refer Dispute ID PP-R-VBQ-10195354. Thank you.",
+              "seller_payable_breakdown": {
+                "gross_amount": {
+                  "currency_code": "USD",
+                  "value": "93.60"
+                },
+                "paypal_fee": {
+                  "currency_code": "USD",
+                  "value": "0.00"
+                },
+                "platform_fees": [
+                  {
+                    "amount": {
+                      "currency_code": "USD",
+                      "value": "0.00"
+                    }
+                  }
+                ],
+                "net_amount": {
+                  "currency_code": "USD",
+                  "value": "93.60"
+                },
+                "total_refunded_amount": {
+                  "currency_code": "USD",
+                  "value": "93.60"
+                }
+              },
+              "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+              "status": "COMPLETED",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/refunds/16538294U8745022L",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/7XB25686Y40249606",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-10-30T16:00:39-07:00",
+              "update_time": "2026-10-30T16:00:39-07:00"
+            },
+            {
+              "id": "4L197050T6111811H",
+              "amount": {
+                "currency_code": "USD",
+                "value": "375.90"
+              },
+              "note_to_payer": "93.6 USD; 2026-10-30 Credit has been processed and claim is now closed. Please refer Dispute ID PP-R-VBQ-10195354. Thank you.",
+              "seller_payable_breakdown": {
+                "gross_amount": {
+                  "currency_code": "USD",
+                  "value": "375.90"
+                },
+                "paypal_fee": {
+                  "currency_code": "USD",
+                  "value": "0.00"
+                },
+                "platform_fees": [
+                  {
+                    "amount": {
+                      "currency_code": "USD",
+                      "value": "0.00"
+                    }
+                  }
+                ],
+                "net_amount": {
+                  "currency_code": "USD",
+                  "value": "375.90"
+                },
+                "total_refunded_amount": {
+                  "currency_code": "USD",
+                  "value": "93.60"
+                }
+              },
+              "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+              "status": "FAILED",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/refunds/4L197050T6111811H",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/7XB25686Y40249606",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-10-30T14:07:33-07:00",
+              "update_time": "2026-10-30T16:00:39-07:00"
+            }
+          ]
+        }
+      }
+    ],
+    "payer": {
+      "name": {
+        "given_name": "John",
+        "surname": "Doe"
+      },
+      "email_address": "sb-ynoye53637513@personal.example.com",
+      "payer_id": "BUAYZ5FVXRG22",
+      "address": {
+        "country_code": "US"
+      }
+    },
+    "create_time": "2026-10-30T20:18:15Z",
+    "update_time": "2026-10-30T20:37:44Z",
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/1TK548202F828453K",
+        "rel": "self",
+        "method": "GET"
+      }
+    ],
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
   }
 }
