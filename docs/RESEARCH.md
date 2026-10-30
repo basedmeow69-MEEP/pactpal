@@ -64,3 +64,4 @@ Crowd-saturation percentages, participant count, the 99/100 self-score, market-s
 - Buyer approval must come from the Personal Sandbox account; the Business account is the merchant ("associated with the merchant").
 - First fully live Path A (2026-10-30): order 1TK548202F828453K authorized, authorization 84H15091MS304251H, capture 7XB25686Y40249606 COMPLETED $390.00, payout batch QM9PAKJFTZA6J (PENDING on submit).
 - Shipment tracker needs the capture id (not the authorization id); trackers-batch reports errors inside a 200 body.
+- Live dispute PP-R-VBQ-10195354 (buyer-opened on capture 7XB25686Y40249606): INQUIRY stage, merchant actions make_offer/accept_claim/send_message/escalate. make-offer body is top-level `offer_type`/`offer_amount`/`note` (not nested under `offer`). Seller offer $93.60 REFUND accepted by API (200); dispute moved to UNDER_REVIEW awaiting buyer.

@@ -166,6 +166,18 @@
           <button onclick="runPact(null, true)" class="ml-2 mt-2 px-3 py-1.5 rounded bg-emerald-600 text-white">2. Continue pact</button>`;
         return;
       }
+      if (data.status === "AWAITING_BUYER_DISPUTE" || data.status === "AWAITING_BUYER_OFFER_RESPONSE") {
+        document.getElementById("kpiStatus").className = "text-lg font-bold text-amber-400 mt-1";
+        document.getElementById("kpiSla").textContent = `${data.sla_verdict.overall_sla_score.toFixed(1)}%`;
+        document.getElementById("kpiZone").textContent = data.sla_verdict.epistemic_zone;
+        renderTurns(data.negotiation_turns);
+        document.getElementById("courtroomBox").innerHTML = `
+          <div class="text-amber-400 font-bold">LIVE SANDBOX DISPUTE COURTROOM :: ${esc(data.dispute_id || "waiting for buyer")}</div>
+          <div>Capture ${esc(data.capture_id)} · SLA ${data.sla_verdict.overall_sla_score}%</div>
+          <div class="mt-1">${esc(data.next_step)}</div>
+          <button onclick="runPact(null, true)" class="mt-2 px-3 py-1.5 rounded bg-emerald-600 text-white">Continue pact</button>`;
+        return;
+      }
       if (data.status === "HALTED_ON_PAYPAL_SANDBOX_ERROR" || data.status === "BLOCKED_BY_SPEND_MANDATE_GUARDRAIL") {
         const reason = data.error ? `HTTP ${data.error.http_status} at ${data.error.endpoint}` : data.mandate_verification.reason;
         document.getElementById("kpiStatus").className = "text-lg font-bold text-rose-400 mt-1";

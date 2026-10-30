@@ -281,6 +281,48 @@ class PactPalClearinghouseEngine:
                 "paypal_telemetry": [t.to_dict() for t in telemetry_log],
             }
 
+    def _capture_and_track(
+        self, pact_id: str, auth_id: str, settled_usd: float, telemetry_log: list[PayPalApiCallTelemetry]
+    ) -> str:
+        """Capture the escrow hold, then register the delivery tracker on the captured payment."""
+        cap_res, cap_tel = self.client.invoke_sandbox_endpoint(
+            pact_id=pact_id,
+            api_family="Payments v2 Capture",
+            http_method="POST",
+            endpoint=f"/v2/payments/authorizations/{auth_id}/capture",
+            agent_toolkit_tool="pay_order",
+            payload={"amount": {"currency_code": "USD", "value": f"{settled_usd:.2f}"}, "final_capture": True},
+            summary_template=f"Captured 100% of Escrow (${settled_usd:.2f}) under Capture {{id}}",
+        )
+        telemetry_log.append(cap_tel)
+        capture_id = cap_res["id"]
+
+        # Shipment Tracking v1: PayPal only accepts trackers on a captured (seller) transaction
+        try:
+            _, trk_tel = self.client.invoke_sandbox_endpoint(
+                pact_id=pact_id,
+                api_family="Shipment Tracking v1",
+                http_method="POST",
+                endpoint="/v1/shipping/trackers-batch",
+                agent_toolkit_tool="create_shipment_tracking",
+                payload={
+                    "trackers": [
+                        {
+                            "transaction_id": capture_id,
+                            "tracking_number": f"PACTPAL-{pact_id}",
+                            "status": "DELIVERED",
+                            "carrier": "OTHER",
+                            "carrier_name_other": "PactPal SLA Telemetry Oracle",
+                        }
+                    ]
+                },
+                summary_template="Registered verified delivery tracker {id} on the captured payment",
+            )
+            telemetry_log.append(trk_tel)
+        except PayPalSandboxError as exc:
+            telemetry_log.append(exc.telemetry)
+        return capture_id
+
     def _run_paypal_stages(
         self,
         scenario: dict[str, Any],
@@ -400,7 +442,7 @@ class PactPalClearinghouseEngine:
                 summary_template="Checked buyer approval for Order {id}",
             )
             telemetry_log.append(get_tel)
-            if live_order.get("status") != "APPROVED":
+            if live_order.get("status") not in ("APPROVED", "COMPLETED"):
                 approve_url = next(
                     (l["href"] for l in ord_res.get("links", []) if l.get("rel") in ("approve", "payer-action")), None
                 )
@@ -442,42 +484,7 @@ class PactPalClearinghouseEngine:
 
         if verdict.epistemic_zone == "GREEN_FULL_CAPTURE":
             # Stage 4A: Full Order Capture + 3-Way Multiparty Batch Payout
-            cap_res, cap_tel = self.client.invoke_sandbox_endpoint(
-                pact_id=pact_id,
-                api_family="Payments v2 Capture",
-                http_method="POST",
-                endpoint=f"/v2/payments/authorizations/{auth_id}/capture",
-                agent_toolkit_tool="pay_order",
-                payload={"amount": {"currency_code": "USD", "value": f"{settled_usd:.2f}"}, "final_capture": True},
-                summary_template=f"Captured 100% of Escrow (${settled_usd:.2f}) under Capture {{id}}",
-            )
-            telemetry_log.append(cap_tel)
-            capture_id = cap_res["id"]
-
-            # Shipment Tracking v1: PayPal only accepts trackers on a captured (seller) transaction
-            try:
-                _, trk_tel = self.client.invoke_sandbox_endpoint(
-                    pact_id=pact_id,
-                    api_family="Shipment Tracking v1",
-                    http_method="POST",
-                    endpoint="/v1/shipping/trackers-batch",
-                    agent_toolkit_tool="create_shipment_tracking",
-                    payload={
-                        "trackers": [
-                            {
-                                "transaction_id": capture_id,
-                                "tracking_number": f"PACTPAL-{pact_id}",
-                                "status": "DELIVERED",
-                                "carrier": "OTHER",
-                                "carrier_name_other": "PactPal SLA Telemetry Oracle",
-                            }
-                        ]
-                    },
-                    summary_template="Registered verified delivery tracker {id} on the captured payment",
-                )
-                telemetry_log.append(trk_tel)
-            except PayPalSandboxError as exc:
-                telemetry_log.append(exc.telemetry)
+            capture_id = self._capture_and_track(pact_id, auth_id, settled_usd, telemetry_log)
 
             split_1 = round(settled_usd * 0.75, 2)
             split_2 = round(settled_usd * 0.20, 2)
@@ -535,8 +542,91 @@ class PactPalClearinghouseEngine:
             telemetry_log.append(cancel_tel)
             final_status = "VOIDED_SLA_FAILURE_FULL_BUYER_REFUND"
 
+        elif self.client.is_live:
+            # Stage 4B (live Sandbox): capture, then settle the buyer's real dispute with a partial-cure offer.
+            # Order follows the Disputes v1 lifecycle: make-offer is only allowed in the INQUIRY stage,
+            # and only the buyer can accept it (PayPal then refunds the offered amount automatically).
+            capture_id = self._capture_and_track(pact_id, auth_id, settled_usd, telemetry_log)
+            disputes, list_tel = self.client.invoke_sandbox_endpoint(
+                pact_id=pact_id,
+                api_family="Disputes v1",
+                http_method="GET",
+                endpoint=f"/v1/customer/disputes?disputed_transaction_id={capture_id}",
+                agent_toolkit_tool="list_disputes",
+                payload={},
+                summary_template="Looked up buyer disputes on Capture " + capture_id,
+            )
+            telemetry_log.append(list_tel)
+            open_items = disputes.get("items", [])
+            waiting = {
+                "pact_id": pact_id,
+                "scenario_title": scenario["title"],
+                "negotiation_engine": negotiation_engine,
+                "invoice_id": invoice_id,
+                "order_id": order_id,
+                "authorization_id": auth_id,
+                "capture_id": capture_id,
+                "sla_verdict": asdict(verdict),
+                "negotiation_turns": [asdict(t) for t in turns],
+                "mandate_verification": {"allowed": True, "reason": mandate_msg, "mandate": asdict(mandate)},
+            }
+            if not open_items:
+                return {
+                    **waiting,
+                    "status": "AWAITING_BUYER_DISPUTE",
+                    "next_step": f"Log in as the Sandbox Personal buyer and open a dispute on the ${settled_usd:.2f} payment, then continue the pact.",
+                    "paypal_telemetry": [t.to_dict() for t in telemetry_log],
+                }
+            dispute_id = open_items[0]["dispute_id"]
+            dispute, get_tel = self.client.invoke_sandbox_endpoint(
+                pact_id=pact_id,
+                api_family="Disputes v1",
+                http_method="GET",
+                endpoint=f"/v1/customer/disputes/{dispute_id}",
+                agent_toolkit_tool="get_dispute",
+                payload={},
+                summary_template=f"Read dispute {dispute_id}",
+            )
+            telemetry_log.append(get_tel)
+            offered = (dispute.get("offer") or {}).get("seller_offered_amount")
+            if dispute.get("status") != "RESOLVED" and not offered:
+                _, offer_tel = self.client.invoke_sandbox_endpoint(
+                    pact_id=pact_id,
+                    api_family="Disputes v1 Make Offer",
+                    http_method="POST",
+                    endpoint=f"/v1/customer/disputes/{dispute_id}/make-offer",
+                    agent_toolkit_tool="make_dispute_offer",
+                    payload={
+                        "note": (
+                            f"PactPal SLA audit scored {verdict.overall_sla_score:.1f}% (contract gate 90%). Seller agent offers a "
+                            f"{verdict.defect_ratio:.0%} partial-cure refund matching the measured defect ratio instead of a full chargeback."
+                        ),
+                        "offer_type": "REFUND",
+                        "offer_amount": {"currency_code": "USD", "value": f"{verdict.recommended_partial_refund_usd:.2f}"},
+                    },
+                    summary_template=f"Seller agent offered ${verdict.recommended_partial_refund_usd:.2f} partial-cure refund on {dispute_id}",
+                )
+                telemetry_log.append(offer_tel)
+            if dispute.get("status") != "RESOLVED":
+                return {
+                    **waiting,
+                    "status": "AWAITING_BUYER_OFFER_RESPONSE",
+                    "dispute_id": dispute_id,
+                    "next_step": f"The buyer accepts the ${verdict.recommended_partial_refund_usd:.2f} offer in the Sandbox Resolution Center, then continue the pact.",
+                    "paypal_telemetry": [t.to_dict() for t in telemetry_log],
+                }
+            dispute_courtroom_record = {
+                "dispute_id": dispute_id,
+                "reason": f"{dispute.get('reason')} (SLA {verdict.overall_sla_score:.1f}% < 90.0% gate)",
+                "seller_offer_id": dispute_id,
+                "partial_refund_usd": verdict.recommended_partial_refund_usd,
+                "net_merchant_settlement_usd": verdict.net_merchant_capture_usd,
+                "resolution_status": f"{dispute.get('status')} / {(dispute.get('dispute_outcome') or {}).get('outcome_code', 'RESOLVED')}",
+            }
+            final_status = "RESOLVED_VIA_PARTIAL_CURE_COURTROOM"
+
         else:
-            # Stage 4B: Autonomous Sandbox Dispute Courtroom & Partial-Cure Settlement
+            # Stage 4B (simulated): Autonomous Sandbox Dispute Courtroom & Partial-Cure Settlement
             disp_res, disp_tel = self.client.invoke_sandbox_endpoint(
                 pact_id=pact_id,
                 api_family="Disputes v1 (Sandbox)",
