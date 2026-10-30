@@ -2477,5 +2477,417 @@
     ],
     "_http_status": 201,
     "_source": "LIVE SANDBOX"
+  },
+  "7cd697d6c4c6af4eb2f52802137c96a49739": {
+    "id": "INV2-3AHS-ZZPZ-AJU2-SCUK",
+    "status": "DRAFT",
+    "detail": {
+      "currency_code": "USD",
+      "note": "PactPal A2A Contract PACT-2026-DERM-02-red1793402616",
+      "category_code": "SHIPPABLE",
+      "invoice_number": "0009",
+      "invoice_date": "2026-10-30",
+      "payment_term": {
+        "term_type": "NO_DUE_DATE"
+      },
+      "viewed_by_recipient": false,
+      "group_draft": false,
+      "metadata": {
+        "create_time": "2026-10-30T23:24:09Z",
+        "last_update_time": "2026-10-30T23:24:09Z",
+        "created_by_flow": "REGULAR_SINGLE",
+        "recipient_view_url": "https://www.sandbox.paypal.com/invoice/p/#3AHSZZPZAJU2SCUK",
+        "invoicer_view_url": "https://www.sandbox.paypal.com/invoice/details/INV2-3AHS-ZZPZ-AJU2-SCUK",
+        "caller_type": "API_V2_INVOICE",
+        "spam_info": {}
+      },
+      "archived": false
+    },
+    "invoicer": {
+      "business_name": "PactPal Seller Deal-Desk"
+    },
+    "items": [
+      {
+        "id": "ITEM-305420261U116462C",
+        "name": "Aura Labs Panthenol + Cica Barrier Duo (Skin AI Verified)",
+        "quantity": "1",
+        "unit_amount": {
+          "currency_code": "USD",
+          "value": "77.90"
+        }
+      },
+      {
+        "id": "ITEM-3JH8777692300425H",
+        "name": "Atelier Vera Sage-Emerald Cashmere Drape + Satin Look Duo",
+        "quantity": "1",
+        "unit_amount": {
+          "currency_code": "USD",
+          "value": "193.80"
+        }
+      },
+      {
+        "id": "ITEM-0GT82190HS565493A",
+        "name": "Lumen 18K Brushed Gold Pearl Drop Earrings",
+        "quantity": "1",
+        "unit_amount": {
+          "currency_code": "USD",
+          "value": "81.70"
+        }
+      }
+    ],
+    "configuration": {
+      "tax_calculated_after_discount": false,
+      "tax_inclusive": false,
+      "allow_tip": false,
+      "allow_only_pay_by_bank": false,
+      "allow_vba_payments": false,
+      "save_item_for_future": true,
+      "template_id": "TEMP-34X08926X6995120S"
+    },
+    "amount": {
+      "breakdown": {
+        "item_total": {
+          "currency_code": "USD",
+          "value": "353.40"
+        },
+        "discount": {
+          "invoice_discount": {
+            "amount": {
+              "currency_code": "USD",
+              "value": "0.00"
+            }
+          },
+          "item_discount": {
+            "currency_code": "USD",
+            "value": "0.00"
+          }
+        },
+        "tax_total": {
+          "currency_code": "USD",
+          "value": "0.00"
+        }
+      },
+      "currency_code": "USD",
+      "value": "353.40"
+    },
+    "due_amount": {
+      "currency_code": "USD",
+      "value": "353.40"
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-3AHS-ZZPZ-AJU2-SCUK",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-3AHS-ZZPZ-AJU2-SCUK/send",
+        "rel": "send",
+        "method": "POST"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-3AHS-ZZPZ-AJU2-SCUK",
+        "rel": "replace",
+        "method": "PUT"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-3AHS-ZZPZ-AJU2-SCUK",
+        "rel": "delete",
+        "method": "DELETE"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/invoicing/invoices/INV2-3AHS-ZZPZ-AJU2-SCUK/payments",
+        "rel": "record-payment",
+        "method": "POST"
+      }
+    ],
+    "unilateral": false,
+    "settings": {},
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
+  },
+  "52080aca4b69c29a99973d20e7f8b7a65b2e": {
+    "href": "https://www.sandbox.paypal.com/invoice/p/#INV2-3AHS-ZZPZ-AJU2-SCUK",
+    "rel": "payer-view",
+    "method": "GET",
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX",
+    "id": "INV2-3AHS-ZZPZ-AJU2-SCUK"
+  },
+  "95a669a2e25c2c99df0d18945045898e8468": {
+    "qr_png_base64": "--b291f76b-8fa4-410b-8080-9cac2533a094\r\nContent-Disposition: form-data; name=\"image\"\r\nContent-Type: text/plain\r\n\r\niVBORw0KGgoAAAANSUhEUgAAASwAAAEsAQAAAABRBrPYAAACPklEQVR4Xu2XQW7FIAxEnVWOwU0h3DRH6JIV7oxN+n9QpXZTVbGwECLwWGQ8hkT0N/Eh88y3sbApFjbFwqZY2BQLm+IvsC6MomfeT9n5uPkYscfCOOZ8aQnjqgSwq4ylSBh08EmStaVDEjeK5IiYT9YmmWrocc3Ew0pLynSfGzTR18ZYmFqi07FDBzcANHEzxMKEkaHAvXE2Fjai4WTGloSGinYpPMJgFISvD2/rgVpubHyk20NhkEJob/ochUxMh729D4N1SYrz6uKrXUOAzeqhMI9u9u6vTymdU/98DEvKWsbSKTTAMDlUknfdAmBiGR/ehskpi7bX8RUH4xgm5+v7GPs2M/ms2/OxTnuTLI1WpxTs4YdYmPDDKRPjZZSxhRXN+Zsgz8fUdfBChge+SpsqhcI4pqXZF/N2YWlz11wLD8cUalzGPizpmEFXlWYIhSH1nLF0j9LWyjv3dnBFwJhoMwD/04Eh4wa0ey08H+v8gT3l+o2FDsXdzuoOhSlPKuQaPXSgsavtJR8L61yiwzem3tUwidhiYahfK+Fuua4tqVV34WIszAThu5sHut2/W5NZkBBYpiaoX7uMBkyrHwExfmBgIOOw4uA7QZ6NefQ3IBvQrUXCAHDpuoywVO3gcjgUxjGOqVHUFzbUiIVhla+/jfrlfcTYsTciJjy7IMghNLk13xUQ04ZPCx7RWTjgZDQMnQuS/LFa9rPdR6EwYRCDz6kGBjAAtkCoUNiPsbApFjbFwqZY2BQLm+J/sE/7eAEBT7+iYwAAAABJRU5ErkJggg==\r\n--b291f76b-8fa4-410b-8080-9cac2533a094--",
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX",
+    "id": "PP-95A669A2E2"
+  },
+  "10e0ce30b4299da89938ec8c2e495d71c847": {
+    "id": "0G419337H3984125W",
+    "intent": "AUTHORIZE",
+    "status": "CREATED",
+    "purchase_units": [
+      {
+        "reference_id": "PACT-2026-DERM-02-red1793402616",
+        "amount": {
+          "currency_code": "USD",
+          "value": "353.40"
+        },
+        "payee": {
+          "email_address": "sb-tmbkq53634617@business.example.com",
+          "merchant_id": "HFPMFGXK8CZYJ"
+        },
+        "custom_id": "MND-PACT-2026-DERM-02-red1793402616"
+      }
+    ],
+    "create_time": "2026-10-30T23:24:15Z",
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://www.sandbox.paypal.com/checkoutnow?token=0G419337H3984125W",
+        "rel": "approve",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W",
+        "rel": "update",
+        "method": "PATCH"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W/authorize",
+        "rel": "authorize",
+        "method": "POST"
+      }
+    ],
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
+  },
+  "49604f65e3e321da7718ef2e2b6936448080": {
+    "id": "0G419337H3984125W",
+    "intent": "AUTHORIZE",
+    "status": "APPROVED",
+    "payment_source": {
+      "paypal": {
+        "email_address": "sb-ynoye53637513@personal.example.com",
+        "account_id": "BUAYZ5FVXRG22",
+        "account_status": "VERIFIED",
+        "name": {
+          "given_name": "John",
+          "surname": "Doe"
+        },
+        "address": {
+          "country_code": "US"
+        }
+      }
+    },
+    "purchase_units": [
+      {
+        "reference_id": "PACT-2026-DERM-02-red1793402616",
+        "amount": {
+          "currency_code": "USD",
+          "value": "353.40",
+          "breakdown": {}
+        },
+        "payee": {
+          "email_address": "sb-tmbkq53634617@business.example.com",
+          "merchant_id": "HFPMFGXK8CZYJ"
+        },
+        "custom_id": "MND-PACT-2026-DERM-02-red1793402616",
+        "shipping": {
+          "name": {
+            "full_name": "John Doe"
+          },
+          "address": {
+            "address_line_1": "2211 N First St",
+            "admin_area_2": "San Jose",
+            "admin_area_1": "CA",
+            "postal_code": "95131",
+            "country_code": "US"
+          }
+        }
+      }
+    ],
+    "payer": {
+      "name": {
+        "given_name": "John",
+        "surname": "Doe"
+      },
+      "email_address": "sb-ynoye53637513@personal.example.com",
+      "payer_id": "BUAYZ5FVXRG22",
+      "address": {
+        "country_code": "US"
+      }
+    },
+    "create_time": "2026-10-30T23:24:15Z",
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W/authorize",
+        "rel": "authorize",
+        "method": "POST"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W",
+        "rel": "update",
+        "method": "PATCH"
+      }
+    ],
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX"
+  },
+  "94b3fbe448f54e067e12cfcd31d2ea7c8e7c": {
+    "id": "0G419337H3984125W",
+    "intent": "AUTHORIZE",
+    "status": "COMPLETED",
+    "payment_source": {
+      "paypal": {
+        "email_address": "sb-ynoye53637513@personal.example.com",
+        "account_id": "BUAYZ5FVXRG22",
+        "account_status": "VERIFIED",
+        "name": {
+          "given_name": "John",
+          "surname": "Doe"
+        },
+        "address": {
+          "country_code": "US"
+        }
+      }
+    },
+    "purchase_units": [
+      {
+        "reference_id": "PACT-2026-DERM-02-red1793402616",
+        "amount": {
+          "currency_code": "USD",
+          "value": "353.40"
+        },
+        "payee": {
+          "email_address": "sb-tmbkq53634617@business.example.com",
+          "merchant_id": "HFPMFGXK8CZYJ"
+        },
+        "custom_id": "MND-PACT-2026-DERM-02-red1793402616",
+        "shipping": {
+          "name": {
+            "full_name": "John Doe"
+          },
+          "address": {
+            "address_line_1": "2211 N First St",
+            "admin_area_2": "San Jose",
+            "admin_area_1": "CA",
+            "postal_code": "95131",
+            "country_code": "US"
+          }
+        },
+        "payments": {
+          "authorizations": [
+            {
+              "status": "CREATED",
+              "id": "559694531V423780Y",
+              "amount": {
+                "currency_code": "USD",
+                "value": "353.40"
+              },
+              "custom_id": "MND-PACT-2026-DERM-02-red1793402616",
+              "seller_protection": {
+                "status": "ELIGIBLE",
+                "dispute_categories": [
+                  "ITEM_NOT_RECEIVED",
+                  "UNAUTHORIZED_TRANSACTION"
+                ]
+              },
+              "expiration_time": "2026-11-28T23:32:08Z",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/559694531V423780Y",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/559694531V423780Y/capture",
+                  "rel": "capture",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/559694531V423780Y/void",
+                  "rel": "void",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/559694531V423780Y/reauthorize",
+                  "rel": "reauthorize",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-10-30T23:32:08Z",
+              "update_time": "2026-10-30T23:32:08Z"
+            }
+          ]
+        }
+      }
+    ],
+    "payer": {
+      "name": {
+        "given_name": "John",
+        "surname": "Doe"
+      },
+      "email_address": "sb-ynoye53637513@personal.example.com",
+      "payer_id": "BUAYZ5FVXRG22",
+      "address": {
+        "country_code": "US"
+      }
+    },
+    "create_time": "2026-10-30T23:24:15Z",
+    "update_time": "2026-10-30T23:32:09Z",
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/0G419337H3984125W",
+        "rel": "self",
+        "method": "GET"
+      }
+    ],
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
+  },
+  "42e1dddc9daf1bd1d5aaa75ab43701b26cf0": {
+    "id": "559694531V423780Y",
+    "status": "VOIDED",
+    "amount": {
+      "currency_code": "USD",
+      "value": "353.40"
+    },
+    "seller_protection": {
+      "status": "ELIGIBLE",
+      "dispute_categories": [
+        "ITEM_NOT_RECEIVED",
+        "UNAUTHORIZED_TRANSACTION"
+      ]
+    },
+    "expiration_time": "2026-11-28T15:32:08-08:00",
+    "create_time": "2026-10-30T16:32:08-07:00",
+    "update_time": "2026-10-30T16:32:10-07:00",
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/559694531V423780Y",
+        "rel": "self",
+        "method": "GET"
+      }
+    ],
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX"
+  },
+  "f137d96d2d086e2916cd865c3564534b5f25": {
+    "id": "INV2-3AHS-ZZPZ-AJU2-SCUK",
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX"
   }
 }
