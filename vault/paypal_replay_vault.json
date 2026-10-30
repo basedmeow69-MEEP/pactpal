@@ -1048,10 +1048,7 @@
           "captures": [
             {
               "id": "7XB25686Y40249606",
-              "status": "PENDING",
-              "status_details": {
-                "reason": "BUYER_COMPLAINT"
-              },
+              "status": "PARTIALLY_REFUNDED",
               "amount": {
                 "currency_code": "USD",
                 "value": "390.00"
@@ -1064,6 +1061,20 @@
                   "ITEM_NOT_RECEIVED",
                   "UNAUTHORIZED_TRANSACTION"
                 ]
+              },
+              "seller_receivable_breakdown": {
+                "gross_amount": {
+                  "currency_code": "USD",
+                  "value": "390.00"
+                },
+                "paypal_fee": {
+                  "currency_code": "USD",
+                  "value": "14.10"
+                },
+                "net_amount": {
+                  "currency_code": "USD",
+                  "value": "375.90"
+                }
               },
               "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
               "links": [
@@ -1084,16 +1095,67 @@
                 }
               ],
               "create_time": "2026-10-30T20:37:46Z",
-              "update_time": "2026-10-30T21:07:33Z"
+              "update_time": "2026-10-30T23:02:42Z"
             }
           ],
           "refunds": [
+            {
+              "id": "16538294U8745022L",
+              "amount": {
+                "currency_code": "USD",
+                "value": "93.60"
+              },
+              "note_to_payer": "93.6 USD; 2026-10-30 Credit has been processed and claim is now closed. Please refer Dispute ID PP-R-VBQ-10195354. Thank you.",
+              "seller_payable_breakdown": {
+                "gross_amount": {
+                  "currency_code": "USD",
+                  "value": "93.60"
+                },
+                "paypal_fee": {
+                  "currency_code": "USD",
+                  "value": "0.00"
+                },
+                "platform_fees": [
+                  {
+                    "amount": {
+                      "currency_code": "USD",
+                      "value": "0.00"
+                    }
+                  }
+                ],
+                "net_amount": {
+                  "currency_code": "USD",
+                  "value": "93.60"
+                },
+                "total_refunded_amount": {
+                  "currency_code": "USD",
+                  "value": "93.60"
+                }
+              },
+              "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+              "status": "COMPLETED",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/refunds/16538294U8745022L",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/7XB25686Y40249606",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-10-30T16:00:39-07:00",
+              "update_time": "2026-10-30T16:00:39-07:00"
+            },
             {
               "id": "4L197050T6111811H",
               "amount": {
                 "currency_code": "USD",
                 "value": "375.90"
               },
+              "note_to_payer": "93.6 USD; 2026-10-30 Credit has been processed and claim is now closed. Please refer Dispute ID PP-R-VBQ-10195354. Thank you.",
               "seller_payable_breakdown": {
                 "gross_amount": {
                   "currency_code": "USD",
@@ -1117,11 +1179,11 @@
                 },
                 "total_refunded_amount": {
                   "currency_code": "USD",
-                  "value": "0.00"
+                  "value": "93.60"
                 }
               },
               "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
-              "status": "PENDING",
+              "status": "FAILED",
               "links": [
                 {
                   "href": "https://api.sandbox.paypal.com/v2/payments/refunds/4L197050T6111811H",
@@ -1135,7 +1197,7 @@
                 }
               ],
               "create_time": "2026-10-30T14:07:33-07:00",
-              "update_time": "2026-10-30T14:07:33-07:00"
+              "update_time": "2026-10-30T16:00:39-07:00"
             }
           ]
         }
@@ -1635,7 +1697,7 @@
       {
         "dispute_id": "PP-R-VBQ-10195354",
         "create_time": "2026-10-30T21:04:15.000Z",
-        "update_time": "2026-10-30T21:21:43.000Z",
+        "update_time": "2026-10-30T23:02:33.000Z",
         "disputed_transactions": [
           {
             "buyer_transaction_id": "6AW9549789012770H",
@@ -1648,14 +1710,15 @@
           }
         ],
         "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
-        "status": "WAITING_FOR_BUYER_RESPONSE",
-        "dispute_state": "REQUIRED_OTHER_PARTY_ACTION",
+        "status": "RESOLVED",
+        "dispute_state": "RESOLVED",
         "dispute_amount": {
           "currency_code": "USD",
-          "value": "390.00"
+          "value": "93.60"
         },
         "dispute_life_cycle_stage": "INQUIRY",
         "dispute_channel": "INTERNAL",
+        "outcome": "LOST",
         "links": [
           {
             "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-VBQ-10195354",
@@ -1684,13 +1747,13 @@
   "b8b5f83467df7e97fbc7e52fb42fecaf6c7b": {
     "dispute_id": "PP-R-VBQ-10195354",
     "create_time": "2026-10-30T21:04:15.276Z",
-    "update_time": "2026-10-30T21:21:43.886Z",
+    "update_time": "2026-10-30T23:02:33.542Z",
     "disputed_transactions": [
       {
         "buyer_transaction_id": "6AW9549789012770H",
         "seller_transaction_id": "7XB25686Y40249606",
         "create_time": "2026-10-30T20:37:46.000Z",
-        "transaction_status": "HELD",
+        "transaction_status": "PARTIALLY_REFUNDED",
         "gross_amount": {
           "currency_code": "USD",
           "value": "390.00"
@@ -1721,12 +1784,42 @@
       }
     ],
     "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
-    "status": "WAITING_FOR_BUYER_RESPONSE",
+    "status": "RESOLVED",
     "dispute_amount": {
       "currency_code": "USD",
-      "value": "390.00"
+      "value": "93.60"
     },
-    "dispute_state": "REQUIRED_OTHER_PARTY_ACTION",
+    "dispute_state": "RESOLVED",
+    "dispute_outcome": {
+      "outcome_code": "RESOLVED_BUYER_FAVOUR",
+      "outcome_reason": "INQUIRY_OFFER_PARTIAL_REFUND",
+      "amount_refunded": {
+        "currency_code": "USD",
+        "value": "93.60"
+      }
+    },
+    "money_movements": [
+      {
+        "affected_party": "SELLER",
+        "amount": {
+          "currency_code": "USD",
+          "value": "93.60"
+        },
+        "initiated_time": "2026-10-30T23:00:40.420Z",
+        "type": "DEBIT",
+        "reason": "DISPUTE_SETTLEMENT"
+      },
+      {
+        "affected_party": "BUYER",
+        "amount": {
+          "currency_code": "USD",
+          "value": "93.60"
+        },
+        "initiated_time": "2026-10-30T23:00:40.420Z",
+        "type": "CREDIT",
+        "reason": "DISPUTE_SETTLEMENT"
+      }
+    ],
     "fund_movements": [
       {
         "party": "RECEIVER",
@@ -1737,6 +1830,26 @@
         "initiated_time": "2026-10-30T21:07:34.000Z",
         "type": "DEBIT",
         "reason": "HOLD_PLACED"
+      },
+      {
+        "party": "SELLER",
+        "amount": {
+          "currency_code": "USD",
+          "value": "93.60"
+        },
+        "initiated_time": "2026-10-30T23:00:40.420Z",
+        "type": "DEBIT",
+        "reason": "DISPUTE_SETTLEMENT"
+      },
+      {
+        "party": "BUYER",
+        "amount": {
+          "currency_code": "USD",
+          "value": "93.60"
+        },
+        "initiated_time": "2026-10-30T23:00:40.420Z",
+        "type": "CREDIT",
+        "reason": "DISPUTE_SETTLEMENT"
       }
     ],
     "dispute_life_cycle_stage": "INQUIRY",
@@ -1766,11 +1879,10 @@
         "dispute_life_cycle_stage": "INQUIRY"
       }
     ],
-    "buyer_response_due_date": "2026-11-19T21:04:15.276Z",
     "offer": {
       "buyer_requested_amount": {
         "currency_code": "USD",
-        "value": "390.00"
+        "value": "93.60"
       },
       "seller_offered_amount": {
         "currency_code": "USD",
@@ -1787,46 +1899,583 @@
             "currency_code": "USD",
             "value": "93.60"
           }
+        },
+        {
+          "offer_time": "2026-10-30T23:00:40.561Z",
+          "actor": "BUYER",
+          "event_type": "ACCEPTED"
         }
       ]
     },
     "refund_details": {
       "allowed_refund_amount": {
         "currency_code": "USD",
-        "value": "390.00"
-      }
-    },
-    "allowed_response_options": {
-      "accept_claim": {
-        "accept_claim_types": [
-          "REFUND"
-        ]
-      }
+        "value": "93.60"
+      },
+      "transactions": [
+        {
+          "id": "16538294U8745022L",
+          "gross_amount": {
+            "currency_code": "USD",
+            "value": "93.60"
+          },
+          "create_time": "2026-10-30T23:00:40.000Z"
+        }
+      ]
     },
     "links": [
       {
         "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-VBQ-10195354",
         "rel": "self",
         "method": "GET"
-      },
-      {
-        "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-VBQ-10195354/escalate",
-        "rel": "escalate",
-        "method": "POST"
-      },
-      {
-        "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-VBQ-10195354/send-message",
-        "rel": "send_message",
-        "method": "POST"
-      },
-      {
-        "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-VBQ-10195354/accept-claim",
-        "rel": "accept_claim",
-        "method": "POST"
       }
     ],
     "_http_status": 200,
     "_source": "LIVE SANDBOX",
     "id": "PP-B8B5F83467"
+  },
+  "c7607c20a20f8dc094dfc68092c5e417f10a": {
+    "id": "1TK548202F828453K",
+    "intent": "AUTHORIZE",
+    "status": "COMPLETED",
+    "payment_source": {
+      "paypal": {
+        "email_address": "sb-ynoye53637513@personal.example.com",
+        "account_id": "BUAYZ5FVXRG22",
+        "account_status": "VERIFIED",
+        "name": {
+          "given_name": "John",
+          "surname": "Doe"
+        },
+        "address": {
+          "country_code": "US"
+        }
+      }
+    },
+    "purchase_units": [
+      {
+        "reference_id": "PACT-2026-GPU-01-live1793391472",
+        "amount": {
+          "currency_code": "USD",
+          "value": "390.00"
+        },
+        "payee": {
+          "email_address": "sb-tmbkq53634617@business.example.com",
+          "merchant_id": "HFPMFGXK8CZYJ"
+        },
+        "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+        "shipping": {
+          "name": {
+            "full_name": "John Doe"
+          },
+          "address": {
+            "address_line_1": "2211 N First St",
+            "admin_area_2": "San Jose",
+            "admin_area_1": "CA",
+            "postal_code": "95131",
+            "country_code": "US"
+          }
+        },
+        "payments": {
+          "authorizations": [
+            {
+              "status": "CAPTURED",
+              "id": "84H15091MS304251H",
+              "amount": {
+                "currency_code": "USD",
+                "value": "390.00"
+              },
+              "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+              "seller_protection": {
+                "status": "ELIGIBLE",
+                "dispute_categories": [
+                  "ITEM_NOT_RECEIVED",
+                  "UNAUTHORIZED_TRANSACTION"
+                ]
+              },
+              "expiration_time": "2026-11-28T20:37:44Z",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H/capture",
+                  "rel": "capture",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H/void",
+                  "rel": "void",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H/reauthorize",
+                  "rel": "reauthorize",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/1TK548202F828453K",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-10-30T20:37:44Z",
+              "update_time": "2026-10-30T20:37:46Z"
+            }
+          ],
+          "captures": [
+            {
+              "id": "7XB25686Y40249606",
+              "status": "PARTIALLY_REFUNDED",
+              "amount": {
+                "currency_code": "USD",
+                "value": "390.00"
+              },
+              "final_capture": true,
+              "disbursement_mode": "INSTANT",
+              "seller_protection": {
+                "status": "ELIGIBLE",
+                "dispute_categories": [
+                  "ITEM_NOT_RECEIVED",
+                  "UNAUTHORIZED_TRANSACTION"
+                ]
+              },
+              "seller_receivable_breakdown": {
+                "gross_amount": {
+                  "currency_code": "USD",
+                  "value": "390.00"
+                },
+                "paypal_fee": {
+                  "currency_code": "USD",
+                  "value": "14.10"
+                },
+                "net_amount": {
+                  "currency_code": "USD",
+                  "value": "375.90"
+                }
+              },
+              "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/7XB25686Y40249606",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/7XB25686Y40249606/refund",
+                  "rel": "refund",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-10-30T20:37:46Z",
+              "update_time": "2026-10-30T23:00:39Z"
+            }
+          ],
+          "refunds": [
+            {
+              "id": "16538294U8745022L",
+              "amount": {
+                "currency_code": "USD",
+                "value": "93.60"
+              },
+              "note_to_payer": "93.6 USD; 2026-10-30 Credit has been processed and claim is now closed. Please refer Dispute ID PP-R-VBQ-10195354. Thank you.",
+              "seller_payable_breakdown": {
+                "gross_amount": {
+                  "currency_code": "USD",
+                  "value": "93.60"
+                },
+                "paypal_fee": {
+                  "currency_code": "USD",
+                  "value": "0.00"
+                },
+                "platform_fees": [
+                  {
+                    "amount": {
+                      "currency_code": "USD",
+                      "value": "0.00"
+                    }
+                  }
+                ],
+                "net_amount": {
+                  "currency_code": "USD",
+                  "value": "93.60"
+                },
+                "total_refunded_amount": {
+                  "currency_code": "USD",
+                  "value": "93.60"
+                }
+              },
+              "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+              "status": "COMPLETED",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/refunds/16538294U8745022L",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/7XB25686Y40249606",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-10-30T16:00:39-07:00",
+              "update_time": "2026-10-30T16:00:39-07:00"
+            },
+            {
+              "id": "4L197050T6111811H",
+              "amount": {
+                "currency_code": "USD",
+                "value": "375.90"
+              },
+              "note_to_payer": "93.6 USD; 2026-10-30 Credit has been processed and claim is now closed. Please refer Dispute ID PP-R-VBQ-10195354. Thank you.",
+              "seller_payable_breakdown": {
+                "gross_amount": {
+                  "currency_code": "USD",
+                  "value": "375.90"
+                },
+                "paypal_fee": {
+                  "currency_code": "USD",
+                  "value": "0.00"
+                },
+                "platform_fees": [
+                  {
+                    "amount": {
+                      "currency_code": "USD",
+                      "value": "0.00"
+                    }
+                  }
+                ],
+                "net_amount": {
+                  "currency_code": "USD",
+                  "value": "375.90"
+                },
+                "total_refunded_amount": {
+                  "currency_code": "USD",
+                  "value": "93.60"
+                }
+              },
+              "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+              "status": "FAILED",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/refunds/4L197050T6111811H",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/7XB25686Y40249606",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-10-30T14:07:33-07:00",
+              "update_time": "2026-10-30T16:00:39-07:00"
+            }
+          ]
+        }
+      }
+    ],
+    "payer": {
+      "name": {
+        "given_name": "John",
+        "surname": "Doe"
+      },
+      "email_address": "sb-ynoye53637513@personal.example.com",
+      "payer_id": "BUAYZ5FVXRG22",
+      "address": {
+        "country_code": "US"
+      }
+    },
+    "create_time": "2026-10-30T20:18:15Z",
+    "update_time": "2026-10-30T20:37:44Z",
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/1TK548202F828453K",
+        "rel": "self",
+        "method": "GET"
+      }
+    ],
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
+  },
+  "2155715b1e0c6037b369bf9c8b39d763146a": {
+    "id": "1TK548202F828453K",
+    "intent": "AUTHORIZE",
+    "status": "COMPLETED",
+    "payment_source": {
+      "paypal": {
+        "email_address": "sb-ynoye53637513@personal.example.com",
+        "account_id": "BUAYZ5FVXRG22",
+        "account_status": "VERIFIED",
+        "name": {
+          "given_name": "John",
+          "surname": "Doe"
+        },
+        "address": {
+          "country_code": "US"
+        }
+      }
+    },
+    "purchase_units": [
+      {
+        "reference_id": "PACT-2026-GPU-01-live1793391472",
+        "amount": {
+          "currency_code": "USD",
+          "value": "390.00"
+        },
+        "payee": {
+          "email_address": "sb-tmbkq53634617@business.example.com",
+          "merchant_id": "HFPMFGXK8CZYJ"
+        },
+        "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+        "shipping": {
+          "name": {
+            "full_name": "John Doe"
+          },
+          "address": {
+            "address_line_1": "2211 N First St",
+            "admin_area_2": "San Jose",
+            "admin_area_1": "CA",
+            "postal_code": "95131",
+            "country_code": "US"
+          }
+        },
+        "payments": {
+          "authorizations": [
+            {
+              "status": "CAPTURED",
+              "id": "84H15091MS304251H",
+              "amount": {
+                "currency_code": "USD",
+                "value": "390.00"
+              },
+              "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+              "seller_protection": {
+                "status": "ELIGIBLE",
+                "dispute_categories": [
+                  "ITEM_NOT_RECEIVED",
+                  "UNAUTHORIZED_TRANSACTION"
+                ]
+              },
+              "expiration_time": "2026-11-28T20:37:44Z",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H/capture",
+                  "rel": "capture",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H/void",
+                  "rel": "void",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H/reauthorize",
+                  "rel": "reauthorize",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/1TK548202F828453K",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-10-30T20:37:44Z",
+              "update_time": "2026-10-30T20:37:46Z"
+            }
+          ],
+          "captures": [
+            {
+              "id": "7XB25686Y40249606",
+              "status": "PARTIALLY_REFUNDED",
+              "amount": {
+                "currency_code": "USD",
+                "value": "390.00"
+              },
+              "final_capture": true,
+              "disbursement_mode": "INSTANT",
+              "seller_protection": {
+                "status": "ELIGIBLE",
+                "dispute_categories": [
+                  "ITEM_NOT_RECEIVED",
+                  "UNAUTHORIZED_TRANSACTION"
+                ]
+              },
+              "seller_receivable_breakdown": {
+                "gross_amount": {
+                  "currency_code": "USD",
+                  "value": "390.00"
+                },
+                "paypal_fee": {
+                  "currency_code": "USD",
+                  "value": "14.10"
+                },
+                "net_amount": {
+                  "currency_code": "USD",
+                  "value": "375.90"
+                }
+              },
+              "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/7XB25686Y40249606",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/7XB25686Y40249606/refund",
+                  "rel": "refund",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-10-30T20:37:46Z",
+              "update_time": "2026-10-30T23:02:42Z"
+            }
+          ],
+          "refunds": [
+            {
+              "id": "16538294U8745022L",
+              "amount": {
+                "currency_code": "USD",
+                "value": "93.60"
+              },
+              "note_to_payer": "93.6 USD; 2026-10-30 Credit has been processed and claim is now closed. Please refer Dispute ID PP-R-VBQ-10195354. Thank you.",
+              "seller_payable_breakdown": {
+                "gross_amount": {
+                  "currency_code": "USD",
+                  "value": "93.60"
+                },
+                "paypal_fee": {
+                  "currency_code": "USD",
+                  "value": "0.00"
+                },
+                "platform_fees": [
+                  {
+                    "amount": {
+                      "currency_code": "USD",
+                      "value": "0.00"
+                    }
+                  }
+                ],
+                "net_amount": {
+                  "currency_code": "USD",
+                  "value": "93.60"
+                },
+                "total_refunded_amount": {
+                  "currency_code": "USD",
+                  "value": "93.60"
+                }
+              },
+              "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+              "status": "COMPLETED",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/refunds/16538294U8745022L",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/7XB25686Y40249606",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-10-30T16:00:39-07:00",
+              "update_time": "2026-10-30T16:00:39-07:00"
+            },
+            {
+              "id": "4L197050T6111811H",
+              "amount": {
+                "currency_code": "USD",
+                "value": "375.90"
+              },
+              "note_to_payer": "93.6 USD; 2026-10-30 Credit has been processed and claim is now closed. Please refer Dispute ID PP-R-VBQ-10195354. Thank you.",
+              "seller_payable_breakdown": {
+                "gross_amount": {
+                  "currency_code": "USD",
+                  "value": "375.90"
+                },
+                "paypal_fee": {
+                  "currency_code": "USD",
+                  "value": "0.00"
+                },
+                "platform_fees": [
+                  {
+                    "amount": {
+                      "currency_code": "USD",
+                      "value": "0.00"
+                    }
+                  }
+                ],
+                "net_amount": {
+                  "currency_code": "USD",
+                  "value": "375.90"
+                },
+                "total_refunded_amount": {
+                  "currency_code": "USD",
+                  "value": "93.60"
+                }
+              },
+              "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+              "status": "FAILED",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/refunds/4L197050T6111811H",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/7XB25686Y40249606",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-10-30T14:07:33-07:00",
+              "update_time": "2026-10-30T16:00:39-07:00"
+            }
+          ]
+        }
+      }
+    ],
+    "payer": {
+      "name": {
+        "given_name": "John",
+        "surname": "Doe"
+      },
+      "email_address": "sb-ynoye53637513@personal.example.com",
+      "payer_id": "BUAYZ5FVXRG22",
+      "address": {
+        "country_code": "US"
+      }
+    },
+    "create_time": "2026-10-30T20:18:15Z",
+    "update_time": "2026-10-30T20:37:44Z",
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/1TK548202F828453K",
+        "rel": "self",
+        "method": "GET"
+      }
+    ],
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
   }
 }

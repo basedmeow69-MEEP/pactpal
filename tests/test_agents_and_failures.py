@@ -108,3 +108,58 @@ def test_revoked_token_is_refreshed_and_call_retried(monkeypatch, tmp_path: Path
     body, tel = client.invoke_sandbox_endpoint("P", "Orders v2", "POST", "/v2/checkout/orders", "create_order", {}, "{id}")
     assert body["id"] == "ORDER1" and tel.source == "LIVE SANDBOX"
     assert seen == ["Bearer old", "Bearer new"]
+
+
+class FakeLiveSandbox:
+    """Stands in for a live Sandbox client; dispute state is advanced by the test like a real buyer would."""
+
+    is_live = True
+
+    def __init__(self):
+        self.dispute = None  # None -> no dispute yet; then a dict like PayPal's GET dispute response
+        self.calls = []
+
+    def invoke_sandbox_endpoint(self, pact_id, api_family, http_method, endpoint, agent_toolkit_tool, payload, summary_template):
+        from src.apimatic_sdk.models import PayPalApiCallTelemetry
+        self.calls.append((http_method, endpoint, payload))
+        if endpoint.startswith("/v1/customer/disputes?"):
+            body = {"items": [{"dispute_id": "PP-R-TEST"}] if self.dispute else []}
+        elif endpoint == "/v1/customer/disputes/PP-R-TEST":
+            body = {"id": "PP-R-TEST", **self.dispute}
+        elif endpoint.endswith("/make-offer"):
+            self.dispute["offer"] = {"seller_offered_amount": payload["offer_amount"]}
+            body = {"id": "PP-R-TEST"}
+        elif http_method == "GET" and endpoint.startswith("/v2/checkout/orders/"):
+            body = {"id": "ORDER", "status": "APPROVED"}
+        elif endpoint.endswith("/capture"):
+            body = {"id": "CAPTURE1", "status": "COMPLETED"}
+        else:
+            body = {"id": "X"}
+        tel = PayPalApiCallTelemetry(len(self.calls), api_family, http_method, endpoint, agent_toolkit_tool,
+                                     "rid", body.get("id", "X"), 200, False, 0.0, "ok", body, "LIVE SANDBOX")
+        return body, tel
+
+
+def test_live_amber_waits_for_dispute_offers_in_inquiry_then_records_resolution():
+    sandbox = FakeLiveSandbox()
+    engine = PactPalClearinghouseEngine(client=sandbox, use_claude_agents=False)
+    run = lambda: engine.execute_pact_lifecycle(sla_outcome_mode="amber_dispute", run_id="t1")
+
+    assert run()["status"] == "AWAITING_BUYER_DISPUTE"
+
+    sandbox.dispute = {"status": "WAITING_FOR_SELLER_RESPONSE", "dispute_life_cycle_stage": "INQUIRY",
+                       "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED"}
+    waiting = run()
+    assert waiting["status"] == "AWAITING_BUYER_OFFER_RESPONSE"
+    offers = [p for m, e, p in sandbox.calls if e.endswith("/make-offer")]
+    assert offers == [{"note": offers[0]["note"], "offer_type": "REFUND",
+                       "offer_amount": {"currency_code": "USD", "value": "93.60"}}]
+
+    run()  # an existing offer is never re-sent
+    assert len([1 for _, e, _ in sandbox.calls if e.endswith("/make-offer")]) == 1
+
+    sandbox.dispute.update(status="RESOLVED", dispute_outcome={"outcome_code": "RESOLVED_BUYER_FAVOUR"})
+    done = run()
+    assert done["status"] == "RESOLVED_VIA_PARTIAL_CURE_COURTROOM"
+    assert done["dispute_courtroom"]["net_merchant_settlement_usd"] == 296.40
+    assert not any("require-evidence" in e or "adjudicate" in e for _, e, _ in sandbox.calls)
