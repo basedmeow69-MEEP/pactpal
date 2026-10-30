@@ -434,27 +434,6 @@ class PactPalClearinghouseEngine:
         ]
         auth_id = live_auths[0]["id"] if live_auths else auth_res["id"]
 
-        # Call 6 [Shipment Tracking v1]: Register verifiable delivery & SLA artifact hash
-        _, trk_tel = self.client.invoke_sandbox_endpoint(
-            pact_id=pact_id,
-            api_family="Shipment Tracking v1",
-            http_method="POST",
-            endpoint="/v1/shipping/trackers-batch",
-            agent_toolkit_tool="create_shipment_tracking",
-            payload={
-                "trackers": [
-                    {
-                        "transaction_id": auth_id,
-                        "tracking_number": f"PACTPAL-{pact_id}",
-                        "status": "DELIVERED",
-                        "carrier": "OTHER",
-                        "carrier_name_other": "PactPal SLA Telemetry Oracle",
-                    }
-                ]
-            },
-            summary_template="Registered PayPal Delivery & SLA Telemetry Tracker {id}",
-        )
-        telemetry_log.append(trk_tel)
 
         # Stage 3: Evaluate SLA Telemetry
         verdict = self.evaluate_sla_telemetry(settled_usd, outcome_mode)
@@ -463,7 +442,7 @@ class PactPalClearinghouseEngine:
 
         if verdict.epistemic_zone == "GREEN_FULL_CAPTURE":
             # Stage 4A: Full Order Capture + 3-Way Multiparty Batch Payout
-            _, cap_tel = self.client.invoke_sandbox_endpoint(
+            cap_res, cap_tel = self.client.invoke_sandbox_endpoint(
                 pact_id=pact_id,
                 api_family="Payments v2 Capture",
                 http_method="POST",
@@ -473,6 +452,32 @@ class PactPalClearinghouseEngine:
                 summary_template=f"Captured 100% of Escrow (${settled_usd:.2f}) under Capture {{id}}",
             )
             telemetry_log.append(cap_tel)
+            capture_id = cap_res["id"]
+
+            # Shipment Tracking v1: PayPal only accepts trackers on a captured (seller) transaction
+            try:
+                _, trk_tel = self.client.invoke_sandbox_endpoint(
+                    pact_id=pact_id,
+                    api_family="Shipment Tracking v1",
+                    http_method="POST",
+                    endpoint="/v1/shipping/trackers-batch",
+                    agent_toolkit_tool="create_shipment_tracking",
+                    payload={
+                        "trackers": [
+                            {
+                                "transaction_id": capture_id,
+                                "tracking_number": f"PACTPAL-{pact_id}",
+                                "status": "DELIVERED",
+                                "carrier": "OTHER",
+                                "carrier_name_other": "PactPal SLA Telemetry Oracle",
+                            }
+                        ]
+                    },
+                    summary_template="Registered verified delivery tracker {id} on the captured payment",
+                )
+                telemetry_log.append(trk_tel)
+            except PayPalSandboxError as exc:
+                telemetry_log.append(exc.telemetry)
 
             split_1 = round(settled_usd * 0.75, 2)
             split_2 = round(settled_usd * 0.20, 2)

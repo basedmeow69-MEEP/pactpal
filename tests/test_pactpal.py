@@ -42,7 +42,7 @@ def test_amber_sla_autonomous_sandbox_dispute_courtroom_and_vault_replay(tmp_pat
     # 24% partial-cure refund on $390.00 = $93.60 refund, $296.40 net settlement
     assert res1["financial_summary"]["partial_cure_refund_usd"] == 93.60
     assert res1["financial_summary"]["final_net_settled_usd"] == 296.40
-    assert len(res1["paypal_telemetry"]) == 11  # + invoice send step
+    assert len(res1["paypal_telemetry"]) == 10  # + invoice send, tracker only after a capture
 
     # Second identical execution must hit SHA-256 Replay Vault 100% of the time
     res2 = engine.execute_pact_lifecycle(

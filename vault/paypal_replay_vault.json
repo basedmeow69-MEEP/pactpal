@@ -956,7 +956,21 @@
   "a46fa76d0eeebecd15da2e8def18591585ba": {
     "id": "1TK548202F828453K",
     "intent": "AUTHORIZE",
-    "status": "CREATED",
+    "status": "APPROVED",
+    "payment_source": {
+      "paypal": {
+        "email_address": "sb-ynoye53637513@personal.example.com",
+        "account_id": "BUAYZ5FVXRG22",
+        "account_status": "VERIFIED",
+        "name": {
+          "given_name": "John",
+          "surname": "Doe"
+        },
+        "address": {
+          "country_code": "US"
+        }
+      }
+    },
     "purchase_units": [
       {
         "reference_id": "PACT-2026-GPU-01-live1793391472",
@@ -969,19 +983,37 @@
           "email_address": "sb-tmbkq53634617@business.example.com",
           "merchant_id": "HFPMFGXK8CZYJ"
         },
-        "custom_id": "MND-PACT-2026-GPU-01-live1793391472"
+        "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+        "shipping": {
+          "name": {
+            "full_name": "John Doe"
+          },
+          "address": {
+            "address_line_1": "2211 N First St",
+            "admin_area_2": "San Jose",
+            "admin_area_1": "CA",
+            "postal_code": "95131",
+            "country_code": "US"
+          }
+        }
       }
     ],
+    "payer": {
+      "name": {
+        "given_name": "John",
+        "surname": "Doe"
+      },
+      "email_address": "sb-ynoye53637513@personal.example.com",
+      "payer_id": "BUAYZ5FVXRG22",
+      "address": {
+        "country_code": "US"
+      }
+    },
     "create_time": "2026-10-30T20:18:15Z",
     "links": [
       {
         "href": "https://api.sandbox.paypal.com/v2/checkout/orders/1TK548202F828453K",
         "rel": "self",
-        "method": "GET"
-      },
-      {
-        "href": "https://www.sandbox.paypal.com/checkoutnow?token=1TK548202F828453K",
-        "rel": "approve",
         "method": "GET"
       },
       {
@@ -997,5 +1029,227 @@
     ],
     "_http_status": 200,
     "_source": "LIVE SANDBOX"
+  },
+  "65184cc669d411c61b8f34a161ffb0e81483": {
+    "id": "1TK548202F828453K",
+    "intent": "AUTHORIZE",
+    "status": "COMPLETED",
+    "payment_source": {
+      "paypal": {
+        "email_address": "sb-ynoye53637513@personal.example.com",
+        "account_id": "BUAYZ5FVXRG22",
+        "account_status": "VERIFIED",
+        "name": {
+          "given_name": "John",
+          "surname": "Doe"
+        },
+        "address": {
+          "country_code": "US"
+        }
+      }
+    },
+    "purchase_units": [
+      {
+        "reference_id": "PACT-2026-GPU-01-live1793391472",
+        "amount": {
+          "currency_code": "USD",
+          "value": "390.00"
+        },
+        "payee": {
+          "email_address": "sb-tmbkq53634617@business.example.com",
+          "merchant_id": "HFPMFGXK8CZYJ"
+        },
+        "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+        "shipping": {
+          "name": {
+            "full_name": "John Doe"
+          },
+          "address": {
+            "address_line_1": "2211 N First St",
+            "admin_area_2": "San Jose",
+            "admin_area_1": "CA",
+            "postal_code": "95131",
+            "country_code": "US"
+          }
+        },
+        "payments": {
+          "authorizations": [
+            {
+              "status": "CREATED",
+              "id": "84H15091MS304251H",
+              "amount": {
+                "currency_code": "USD",
+                "value": "390.00"
+              },
+              "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+              "seller_protection": {
+                "status": "ELIGIBLE",
+                "dispute_categories": [
+                  "ITEM_NOT_RECEIVED",
+                  "UNAUTHORIZED_TRANSACTION"
+                ]
+              },
+              "expiration_time": "2026-11-28T20:37:44Z",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H/capture",
+                  "rel": "capture",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H/void",
+                  "rel": "void",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H/reauthorize",
+                  "rel": "reauthorize",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/1TK548202F828453K",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-10-30T20:37:44Z",
+              "update_time": "2026-10-30T20:37:44Z"
+            }
+          ]
+        }
+      }
+    ],
+    "payer": {
+      "name": {
+        "given_name": "John",
+        "surname": "Doe"
+      },
+      "email_address": "sb-ynoye53637513@personal.example.com",
+      "payer_id": "BUAYZ5FVXRG22",
+      "address": {
+        "country_code": "US"
+      }
+    },
+    "create_time": "2026-10-30T20:18:15Z",
+    "update_time": "2026-10-30T20:37:44Z",
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/1TK548202F828453K",
+        "rel": "self",
+        "method": "GET"
+      }
+    ],
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
+  },
+  "0953df978239c0ade97f8c9bc65b8ca741a6": {
+    "tracker_identifiers": [],
+    "errors": [
+      {
+        "name": "UNPROCESSABLE_ENTITY",
+        "message": "Provided Transaction ID Is Not A Seller Transaction",
+        "details": [
+          {
+            "field": "/trackers/1/transaction_id",
+            "value": "84H15091MS304251H",
+            "location": "body",
+            "issue": "INVALID_TRANSACTION_ID",
+            "description": "The PayPal transaction id is invalid",
+            "links": []
+          }
+        ],
+        "links": []
+      }
+    ],
+    "links": [
+      {
+        "href": "https://api-m.sandbox.paypal.com/v1/shipping/trackers-batch",
+        "rel": "self",
+        "method": "POST",
+        "encType": "application/json"
+      }
+    ],
+    "_http_status": 200,
+    "_source": "LIVE SANDBOX",
+    "id": "PP-0953DF9782"
+  },
+  "44c99731680fc1c6e56426c3095801f063e8": {
+    "id": "7XB25686Y40249606",
+    "amount": {
+      "currency_code": "USD",
+      "value": "390.00"
+    },
+    "final_capture": true,
+    "seller_protection": {
+      "status": "ELIGIBLE",
+      "dispute_categories": [
+        "ITEM_NOT_RECEIVED",
+        "UNAUTHORIZED_TRANSACTION"
+      ]
+    },
+    "seller_receivable_breakdown": {
+      "gross_amount": {
+        "currency_code": "USD",
+        "value": "390.00"
+      },
+      "paypal_fee": {
+        "currency_code": "USD",
+        "value": "14.10"
+      },
+      "net_amount": {
+        "currency_code": "USD",
+        "value": "375.90"
+      },
+      "exchange_rate": {}
+    },
+    "custom_id": "MND-PACT-2026-GPU-01-live1793391472",
+    "status": "COMPLETED",
+    "create_time": "2026-10-30T20:37:46Z",
+    "update_time": "2026-10-30T20:37:46Z",
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/payments/captures/7XB25686Y40249606",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/payments/captures/7XB25686Y40249606/refund",
+        "rel": "refund",
+        "method": "POST"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/84H15091MS304251H",
+        "rel": "up",
+        "method": "GET"
+      }
+    ],
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX"
+  },
+  "52e4e30f501509933b832f63f3e016d08199": {
+    "batch_header": {
+      "payout_batch_id": "QM9PAKJFTZA6J",
+      "batch_status": "PENDING",
+      "sender_batch_header": {
+        "sender_batch_id": "BATCH-PACT-2026-GPU-01-live1793391472",
+        "email_subject": "PactPal Multiparty Settlement"
+      }
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v1/payments/payouts/QM9PAKJFTZA6J",
+        "rel": "self",
+        "method": "GET",
+        "encType": "application/json"
+      }
+    ],
+    "_http_status": 201,
+    "_source": "LIVE SANDBOX",
+    "id": "PP-52E4E30F50"
   }
 }

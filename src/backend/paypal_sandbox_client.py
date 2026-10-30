@@ -209,6 +209,11 @@ class PayPalSandboxClient:
                 body["_source"] = "LIVE SANDBOX"
                 if "id" not in body and body.get("href"):
                     body["id"] = body["href"].rstrip("/").rsplit("/", 1)[-1].lstrip("#")
+                if "id" not in body and body.get("tracker_identifiers"):
+                    first = body["tracker_identifiers"][0]
+                    body["id"] = f"{first['transaction_id']}-{first['tracking_number']}"
+                if "id" not in body and body.get("batch_header", {}).get("payout_batch_id"):
+                    body["id"] = body["batch_header"]["payout_batch_id"]
                 body.setdefault("id", f"PP-{request_id[:10].upper()}")
         except urllib.error.HTTPError as exc:
             # Never substitute simulated data for a failed live call: surface PayPal's real error.
@@ -233,6 +238,25 @@ class PayPalSandboxClient:
                 source="LIVE SANDBOX",
             )
             raise PayPalSandboxError(exc.code, error_body, telemetry) from exc
+
+        # Batch endpoints (e.g. trackers-batch) report failures inside a 200 body.
+        if body.get("errors"):
+            telemetry = PayPalApiCallTelemetry(
+                step_order=self._call_counter,
+                api_family=api_family,
+                http_method=http_method,
+                endpoint=endpoint,
+                agent_toolkit_tool=agent_toolkit_tool,
+                paypal_request_id=request_id,
+                resource_id="FAILED",
+                status_code=int(body.get("_http_status", 200)),
+                cache_hit=False,
+                latency_ms=round((time.perf_counter() - t0) * 1000.0, 2),
+                summary="FAILED: " + "; ".join(e.get("message", "error") for e in body["errors"]),
+                raw_Preview=body,
+                source="LIVE SANDBOX",
+            )
+            raise PayPalSandboxError(int(body.get("_http_status", 200)), body, telemetry)
 
         self._vault[request_id] = body
         self._save_vault()

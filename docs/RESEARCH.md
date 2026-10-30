@@ -61,3 +61,6 @@ Crowd-saturation percentages, participant count, the 99/100 self-score, market-s
 - Conditional rules: documented body (`rules[]` with `EARLY_PAYMENT_DISCOUNT`/`AUTO_CANCEL`, `rule_expiry_terms`) returns intermittent 422/500 in this Sandbox for draft and recipient invoices. Treated as non-blocking; failure shown in the ledger.
 - Send invoice (`send_to_recipient: false`) works. QR code works only after send and only with a non-JSON `Accept`; response is multipart PNG.
 - Orders `AUTHORIZE`: create works; `/authorize` returns 422 `ORDER_NOT_APPROVED` until the Sandbox buyer approves.
+- Buyer approval must come from the Personal Sandbox account; the Business account is the merchant ("associated with the merchant").
+- First fully live Path A (2026-10-30): order 1TK548202F828453K authorized, authorization 84H15091MS304251H, capture 7XB25686Y40249606 COMPLETED $390.00, payout batch QM9PAKJFTZA6J (PENDING on submit).
+- Shipment tracker needs the capture id (not the authorization id); trackers-batch reports errors inside a 200 body.
