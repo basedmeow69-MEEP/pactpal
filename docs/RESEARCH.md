@@ -20,16 +20,30 @@ Research performed 2026-10-30. The source blueprint is AI-generated; treat every
 | Agents can authorize an order autonomously | NO (as written) | An `AUTHORIZE` order still needs payer approval via its approve link (buyer Sandbox login) before `/authorize`, unless a saved/vaulted payment method is set up. The demo needs one approval step or vaulting; Gate 1 tests this. |
 | Payouts sandbox works out of the box | UNVERIFIED | Reference page states no prerequisites; check the integration guide and the Sandbox account. |
 
-## Not verifiable here (Devpost returned 403 to automated fetches)
+## Official rules (checked 2026-10-30 against the rules page text pasted by the user)
 
-Must be read by a human from https://paypalaihackathon.devpost.com/rules and pasted into this file:
+- **Dates.** Submissions Oct 1 9:15 PT – **Thu Nov 12, 2026, 12:00 PT**. Judging Dec 1–15. Winners around Dec 21. The blueprint's Nov 5 "early eligibility gate" is NOT in the rules; it came from a Devpost email we have not seen. Treat Nov 5 as a self-imposed checkpoint only.
+- **What to build.** An app that integrates the PayPal developer platform (free Sandbox) plus any AI tool, model or platform. "Any AI tool works, as long as PayPal integration is central to the project." New projects are fine; PactPal was created 2026-10-30, inside the period.
+- **Demo access.** Judges must be able to run or interact with a working build: complete setup/run instructions in the repo OR a hosted URL. Mockups or non-functional demos fail. Include "any test account credentials, API keys, or sandbox login details necessary", or clear instructions for obtaining access. Keep it free and available until judging ends (Dec 15). Judges may judge from text, images and video alone.
+- **Functionality.** Must install, run consistently, and "function as depicted in the video". Mock footage must therefore be labeled and must match what the build does.
+- **Repository.** Public on GitHub, Bitbucket or GitLab, with all source, assets and instructions, and "an open source license file ... detectable and visible at the top of the repository page (in the About section)." Root LICENSE confirmed necessary.
+- **Video.** Under 3:00 (judges need not watch past 3:00), shows the project running, public on YouTube, no third-party trademarks or copyrighted music or material without permission.
+- **English** materials. Multiple submissions allowed only if substantially different.
+- **IP.** Original work owned by the entrant; open source allowed if licenses are followed; third-party SDKs/APIs used only as their licenses allow.
+- **Judging.** Stage One pass/fail: fits the theme and reasonably applies the required APIs/SDKs. Stage Two, equally weighted, and ties broken in this order: 1 Technological Implementation, 2 Design, 3 Potential Impact, 4 Innovation/Idea, 5 Presentation. Judging may use panels, peer review or "automated AI-driven analysis", so the README and description should state features and evidence plainly.
+- **Prizes.** Grand: $12,000 / $8,000 / $5,000. Honorable mentions, $5,000 each: Most Creative, Most Impactful, Best Demo Delivery, Best Use of PayPal + AI, Best Use of Agentic Commerce. Sponsor prizes, each for submissions "that use any <sponsor> tools": AG Grid $5,000 / $2,000 / $1,000 ×3; APIMatic $1,000 + 6 months business subscription ×3; Bryntum $1,000 ×3; Channel3 $1,500 ×1; Render $1,000 / $750 / $500 credits. Totals: $67,500 cash + $2,250 credits (blueprint total was right).
+- **Stacking.** At most one Grand Prize OR one Honorable Mention, plus one Sponsor Prize.
+- **Sponsor tool list** also names Astropods, Elastic, KERNEL, Postman and Zapier, but they have no prizes.
+- **Eligibility.** Age of majority where you live; individuals, teams and organizations allowed. Excluded: residents of Brazil, Quebec, Russia, Crimea, Cuba, Iran, North Korea and OFAC-sanctioned places; sponsor/administrator staff and families; judges and their employers. Confirm your own eligibility.
+- **Judges** are not named in the rules and "may change". The blueprint's judge names remain unverified; do not tailor the pitch to individuals.
+- **Participants.** The page shows 24,666 registered.
 
-- Deadline (blueprint: Thu 2026-11-12 12:00 PST) and the early eligibility review (blueprint: Thu 2026-11-05).
-- License-file requirement wording, public-repo requirement, video length cap (blueprint: 3:00).
-- Judging criteria, weights and tie-break order (blueprint: five equal criteria, Technological Implementation first).
-- Prize amounts, sponsor prizes and their requirements, stacking rules.
-- Eligibility: country, age, team size, project creation period / pre-existing code.
-- Judge names. The blueprint lists names; do not tailor pitches to people until confirmed.
+## Consequences for the plan
+
+- **Sponsor target: AG Grid.** It has the most sponsor money ($10,000 over 5 prizes) and only one sponsor prize can stack. "Any AG Grid tools" means the MIT-licensed Community edition qualifies, so Enterprise-only features are optional. Render is a cheap second choice (credits only), mainly useful as the hosted demo.
+- **Bryntum:** only pursue if its trial or license terms allow publishing it in a public open-source repo.
+- **Judge access to Sandbox.** Default: README tells judges how to create their own free Sandbox app and run live, plus a clearly labeled mock mode that works with no keys. Optional: a hosted demo holding our Sandbox keys server-side. Never commit keys.
+- **Honorable mention fit:** "Best Use of Agentic Commerce" and "Most Creative" match the concept.
 
 ## Discarded
 

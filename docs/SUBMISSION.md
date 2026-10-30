@@ -2,14 +2,15 @@
 Status: NOT READY FOR SUBMISSION.
 
 ## Evidence still required
-- Official rules pasted into docs/RESEARCH.md (Gate 0).
+- Entrant confirms personal eligibility (age of majority; not in an excluded country/region; no sponsor, Devpost or judge conflict).
 - Live Sandbox runs for green, amber and red paths with recorded IDs.
 - Public GitHub repository; GitHub About panel shows the license.
 - No secrets in git history (`git log -p | grep -i secret` and a secret scanner).
-- Hosted demo reachable without login, in labeled MOCK mode unless live credentials are configured.
-- Public video under the confirmed cap.
+- Judge access: README setup that works with no keys (labeled MOCK), plus steps to create a free Sandbox app and run live. Optional hosted demo. Available until Dec 15.
+- Description states how PayPal is central and which AI model is used; lists AG Grid usage for the sponsor prize.
+- Public YouTube video under 3:00, showing the build running; no third-party trademarks or music without permission.
 
-## Proposed video outline (target 2:40, adjust to confirmed cap)
+## Proposed video outline (target 2:40; hard limit under 3:00)
 0:00–0:20 — Problem: agents can pay, but nothing protects either side when delivery falls short.
 0:20–1:00 — Negotiation, invoice with conditional rule and QR, mandate, authorization hold.
 1:00–1:30 — Green path: SLA passes, capture shown in the ledger.
