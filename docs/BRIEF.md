@@ -1,6 +1,6 @@
 # PactPal: Settlement and Dispute Layer for Agent Commerce
 
-Spec: docs/BLUEPRINT_SOURCE.md is the build plan and is implemented as written (Steps 1–7). Notes below are reference only.
+Spec: built from a private hackathon blueprint (not included in this repo). Notes below are reference only.
 
 ## Summary
 

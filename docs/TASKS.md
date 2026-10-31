@@ -1,6 +1,6 @@
 # PactPal production
 
-Project started 2026-10-30 from docs/BLUEPRINT_SOURCE.md. Airlock (Hackathons repo) is due first; PactPal work should not take time from Airlock's live gates before Nov 2.
+Project started 2026-10-30 from a private hackathon blueprint (not included in this repo).
 
 ## Gates (in order; do not expand scope past a failed gate)
 
