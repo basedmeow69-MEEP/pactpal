@@ -1,20 +1,17 @@
 # Submission preparation
-Status: NOT READY FOR SUBMISSION.
+Status: build ready; video and Devpost entry outstanding.
 
-## Evidence still required
-- Entrant confirms personal eligibility (age of majority; not in an excluded country/region; no sponsor, Devpost or judge conflict).
-- Live Sandbox runs for green, amber and red paths with recorded IDs.
-- Public GitHub repository; GitHub About panel shows the license.
-- No secrets in git history (`git log -p | grep -i secret` and a secret scanner).
-- Judge access: README setup that works with no keys (labeled MOCK), plus steps to create a free Sandbox app and run live. Optional hosted demo. Available until Dec 15.
-- Description states how PayPal is central and which AI model is used; lists AG Grid usage for the sponsor prize.
-- Public YouTube video under 3:00, showing the build running; no third-party trademarks or music without permission.
+## Done
+- [x] Live Sandbox runs for all three paths, with recorded IDs (`vault/recorded_runs/`, README table).
+- [x] Public GitHub repository: https://github.com/basedmeow69-MEEP/pactpal. GitHub detects the MIT licence.
+- [x] No secrets in git history; `.env` never committed; private blueprint removed from history before publishing.
+- [x] Judge access: runs with no keys (recorded live runs plus labelled simulation); README steps to run live on the judge's own Sandbox.
+- [x] Fresh clone from GitHub passes the test suite.
 
-## Proposed video outline (target 2:40; hard limit under 3:00)
-0:00–0:20 — Problem: agents can pay, but nothing protects either side when delivery falls short.
-0:20–1:00 — Negotiation, invoice with conditional rule and QR, mandate, authorization hold.
-1:00–1:30 — Green path: SLA passes, capture shown in the ledger.
-1:30–2:15 — Amber path: partial remedy computed and settled in Sandbox.
-2:15–2:40 — Guardrails (mandate rejection), idempotency, setup and repo.
+## Outstanding
+- [ ] Record the video from `docs/VIDEO_SCRIPT.md`. It must be under 3:00, public on YouTube, show the build running, and contain no third-party trademarks or music without permission.
+- [ ] Fill in "What's next" in `docs/DEVPOST.md`, paste the entry into Devpost with the GitHub and YouTube links, and save a draft by Thu Nov 5.
+- [ ] Submit by Thu Nov 12, 09:30 PT (buffer before the 12:00 PT deadline). Keep the repo and demo available until judging ends on Dec 15.
+- [ ] Optional: Render-hosted demo (`render.yaml`).
 
-Label mock footage. Only claim what the recorded Sandbox runs show.
+Only claim what the recorded Sandbox runs show, and label any simulated footage.
