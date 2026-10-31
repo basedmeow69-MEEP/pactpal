@@ -14,6 +14,7 @@ import base64
 import hashlib
 import json
 import os
+import re
 import time
 import urllib.error
 import urllib.request
@@ -278,9 +279,8 @@ class PayPalSandboxClient:
         )
         return body, telemetry
 
-    @staticmethod
     def _simulate_paypal_sandbox_response(
-        endpoint: str, payload: dict[str, Any], request_id: str
+        self, endpoint: str, payload: dict[str, Any], request_id: str
     ) -> dict[str, Any]:
         """Return schema-exact PayPal Sandbox JSON responses for deterministic local & CI testing."""
         short = request_id[:10].upper()
@@ -396,24 +396,12 @@ class PayPalSandboxClient:
                 "_http_status": 201,
             }
 
-        if "/require-evidence" in endpoint:
-            disp_id = f"PP-D-{short[:6]}"
+        # Disputes follow the real Sandbox lifecycle: the buyer's dispute is in INQUIRY, the seller
+        # makes an offer, and the (simulated) buyer accepts it, after which PayPal refunds and resolves.
+        if endpoint.startswith("/v1/customer/disputes?"):
             return {
-                "id": disp_id,
-                "dispute_id": disp_id,
-                "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
-                "status": "WAITING_FOR_SELLER_RESPONSE",
-                "dispute_state": "REQUIRED_ACTION",
-                "dispute_life_cycle_stage": "INQUIRY",
-                "sandbox_trigger": "require-evidence",
-                "_http_status": 200,
-            }
-
-        if "/provide-evidence" in endpoint:
-            return {
-                "id": f"EVID-{short[:8]}",
-                "status": "EVIDENCE_SUBMITTED",
-                "evidence_type": payload.get("evidence_type", "PROOF_OF_FULFILLMENT_AND_SLA_TELEMETRY"),
+                "id": f"LIST-{short[:8]}",
+                "items": [{"dispute_id": f"PP-R-SIM-{short[:6]}", "status": "WAITING_FOR_SELLER_RESPONSE"}],
                 "_http_status": 200,
             }
 
@@ -421,20 +409,31 @@ class PayPalSandboxClient:
             return {
                 "id": f"OFFER-{short[:8]}",
                 "status": "OFFER_PROPOSED",
-                "offer_type": payload.get("offer", {}).get("offer_type", "REFUND"),
-                "offer_amount": payload.get("offer", {}).get("offer_amount", {}),
-                "note": payload.get("offer", {}).get("note", ""),
+                "dispute_id": endpoint.split("/")[4],
+                "offer_type": payload.get("offer_type", "REFUND"),
+                "offer_amount": payload.get("offer_amount", {}),
                 "_http_status": 200,
             }
 
-        if "/accept-offer" in endpoint or "/adjudicate" in endpoint:
+        if re.fullmatch(r"/v1/customer/disputes/[^/?]+", endpoint):
+            dispute_id = endpoint.rsplit("/", 1)[-1]
+            offer = next(
+                (v for v in self._vault.values() if v.get("status") == "OFFER_PROPOSED" and v.get("dispute_id") == dispute_id),
+                None,
+            )
+            base = {"id": dispute_id, "dispute_id": dispute_id, "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED", "_http_status": 200}
+            if offer is None:
+                return {**base, "status": "WAITING_FOR_SELLER_RESPONSE", "dispute_life_cycle_stage": "INQUIRY"}
             return {
-                "id": f"RESOLVED-{short[:8]}",
+                **base,
                 "status": "RESOLVED",
-                "dispute_outcome": "RESOLVED_PARTIAL_CURE_SETTLEMENT",
-                "adjudication_mode": "SANDBOX_AUTONOMOUS_COURTROOM",
-                "settled_refund_amount": payload.get("refund_amount", {}),
-                "_http_status": 200,
+                "dispute_life_cycle_stage": "INQUIRY",
+                "offer": {"seller_offered_amount": offer["offer_amount"], "offer_type": offer["offer_type"]},
+                "dispute_outcome": {
+                    "outcome_code": "RESOLVED_BUYER_FAVOUR",
+                    "outcome_reason": "INQUIRY_OFFER_PARTIAL_REFUND",
+                    "amount_refunded": offer["offer_amount"],
+                },
             }
 
         return {"id": f"PP-{short}", "status": "SUCCESS", "_http_status": 200}

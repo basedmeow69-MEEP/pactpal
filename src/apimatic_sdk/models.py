@@ -1,7 +1,7 @@
 """Strongly-typed PayPal Sandbox API models & HMAC-SHA256 SpendMandateToken Guardrail.
 
-Generated & validated against PayPal OpenAPI specifications (Orders v2, Invoicing v2,
-Payouts Batch v1, and Customer Disputes v1) using APIMatic schema validation patterns.
+Hand-written dataclasses for the PactPal request/response records (Orders v2, Invoicing v2,
+Payouts Batch v1, Customer Disputes v1). The package name comes from the original blueprint.
 """
 from __future__ import annotations
 

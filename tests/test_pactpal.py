@@ -42,14 +42,15 @@ def test_amber_sla_autonomous_sandbox_dispute_courtroom_and_vault_replay(tmp_pat
     # 24% partial-cure refund on $390.00 = $93.60 refund, $296.40 net settlement
     assert res1["financial_summary"]["partial_cure_refund_usd"] == 93.60
     assert res1["financial_summary"]["final_net_settled_usd"] == 296.40
-    assert len(res1["paypal_telemetry"]) == 10  # + invoice send, tracker only after a capture
+    assert len(res1["paypal_telemetry"]) == 12  # invoice+send+QR, hold, capture+tracker, real dispute lifecycle
 
     # Second identical execution must hit SHA-256 Replay Vault 100% of the time
     res2 = engine.execute_pact_lifecycle(
         scenario_key="b2b_gpu_inference_cluster",
         sla_outcome_mode="amber_dispute",
     )
-    assert all(call["cache_hit"] is True for call in res2["paypal_telemetry"])
+    # Writes replay from the vault; GETs always read current state (as they must for buyer actions)
+    assert all(call["cache_hit"] is True for call in res2["paypal_telemetry"] if call["http_method"] != "GET")
 
 
 def test_cryptographic_spend_mandate_blocks_over_budget_execution(tmp_path: Path) -> None:

@@ -565,8 +565,8 @@ class PactPalClearinghouseEngine:
             telemetry_log.append(cancel_tel)
             final_status = "VOIDED_SLA_FAILURE_FULL_BUYER_REFUND"
 
-        elif self.client.is_live:
-            # Stage 4B (live Sandbox): capture, then settle the buyer's real dispute with a partial-cure offer.
+        else:
+            # Stage 4B: capture, then settle the buyer's dispute with a partial-cure offer.
             # Order follows the Disputes v1 lifecycle: make-offer is only allowed in the INQUIRY stage,
             # and only the buyer can accept it (PayPal then refunds the offered amount automatically).
             capture_id = self._capture_and_track(pact_id, auth_id, settled_usd, telemetry_log)
@@ -630,6 +630,18 @@ class PactPalClearinghouseEngine:
                     summary_template=f"Seller agent offered ${verdict.recommended_partial_refund_usd:.2f} partial-cure refund on {dispute_id}",
                 )
                 telemetry_log.append(offer_tel)
+                if not self.client.is_live:
+                    # Simulated buyer accepts the offer; the live Sandbox waits for the real buyer instead.
+                    dispute, accept_tel = self.client.invoke_sandbox_endpoint(
+                        pact_id=pact_id,
+                        api_family="Disputes v1",
+                        http_method="GET",
+                        endpoint=f"/v1/customer/disputes/{dispute_id}",
+                        agent_toolkit_tool="get_dispute",
+                        payload={},
+                        summary_template=f"Buyer accepted the offer; dispute {dispute_id} resolved",
+                    )
+                    telemetry_log.append(accept_tel)
             if dispute.get("status") != "RESOLVED":
                 return {
                     **waiting,
@@ -648,79 +660,6 @@ class PactPalClearinghouseEngine:
             }
             final_status = "RESOLVED_VIA_PARTIAL_CURE_COURTROOM"
 
-        else:
-            # Stage 4B (simulated): Autonomous Sandbox Dispute Courtroom & Partial-Cure Settlement
-            disp_res, disp_tel = self.client.invoke_sandbox_endpoint(
-                pact_id=pact_id,
-                api_family="Disputes v1 (Sandbox)",
-                http_method="POST",
-                endpoint=f"/v1/customer/disputes/PP-D-{pact_id[-6:]}/require-evidence",
-                agent_toolkit_tool="get_dispute",
-                payload={"disputed_transactions": [{"seller_transaction_id": auth_id}], "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED"},
-                summary_template="Triggered Sandbox Dispute {id} into REQUIRED_ACTION state",
-            )
-            telemetry_log.append(disp_tel)
-            dispute_id = disp_res["id"]
-
-            _, evid_tel = self.client.invoke_sandbox_endpoint(
-                pact_id=pact_id,
-                api_family="Disputes v1 Evidence",
-                http_method="POST",
-                endpoint=f"/v1/customer/disputes/{dispute_id}/provide-evidence",
-                agent_toolkit_tool="provide_dispute_evidence",
-                payload={
-                    "evidence_type": "PROOF_OF_FULFILLMENT_AND_SLA_TELEMETRY",
-                    "notes": "; ".join(verdict.checks_failed),
-                },
-                summary_template="Uploaded Cryptographic SLA Breach Telemetry Evidence {id}",
-            )
-            telemetry_log.append(evid_tel)
-
-            offer_res, offer_tel = self.client.invoke_sandbox_endpoint(
-                pact_id=pact_id,
-                api_family="Disputes v1 Make Offer",
-                http_method="POST",
-                endpoint=f"/v1/customer/disputes/{dispute_id}/make-offer",
-                agent_toolkit_tool="make_dispute_offer",
-                payload={
-                    "offer": {
-                        "offer_type": "REFUND",
-                        "offer_amount": {"currency_code": "USD", "value": f"{verdict.recommended_partial_refund_usd:.2f}"},
-                        "note": (
-                            f"Autonomous Seller Defense AI proposes 24% Partial-Cure Credit "
-                            f"(${verdict.recommended_partial_refund_usd:.2f} refund; "
-                            f"${verdict.net_merchant_capture_usd:.2f} net capture) matching exact SLA defect ratio."
-                        ),
-                    }
-                },
-                summary_template=f"Seller AI Proposed Partial-Cure Offer {{id}} (-${verdict.recommended_partial_refund_usd:.2f})",
-            )
-            telemetry_log.append(offer_tel)
-
-            adj_res, adj_tel = self.client.invoke_sandbox_endpoint(
-                pact_id=pact_id,
-                api_family="Disputes v1 Adjudicate",
-                http_method="POST",
-                endpoint=f"/v1/customer/disputes/{dispute_id}/adjudicate",
-                agent_toolkit_tool="accept_dispute_claim",
-                payload={
-                    "adjudication_outcome": "BUYER_PAYOUT_PARTIAL_CURE",
-                    "refund_amount": {"currency_code": "USD", "value": f"{verdict.recommended_partial_refund_usd:.2f}"},
-                    "net_captured_amount": {"currency_code": "USD", "value": f"{verdict.net_merchant_capture_usd:.2f}"},
-                },
-                summary_template=f"Sandbox Courtroom Adjudicated {dispute_id}: Settled at ${verdict.net_merchant_capture_usd:.2f} net ({{id}})",
-            )
-            telemetry_log.append(adj_tel)
-
-            dispute_courtroom_record = {
-                "dispute_id": dispute_id,
-                "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED (SLA 76.0% < 90.0% Gate)",
-                "seller_offer_id": offer_res["id"],
-                "partial_refund_usd": verdict.recommended_partial_refund_usd,
-                "net_merchant_settlement_usd": verdict.net_merchant_capture_usd,
-                "resolution_status": adj_res["dispute_outcome"],
-            }
-            final_status = "RESOLVED_VIA_PARTIAL_CURE_COURTROOM"
 
         return {
             "pact_id": pact_id,

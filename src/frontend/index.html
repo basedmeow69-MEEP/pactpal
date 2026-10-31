@@ -33,6 +33,9 @@
       <button onclick="runPact('red_void')" class="bg-rose-700 hover:bg-rose-600 text-white font-semibold px-4 py-2 rounded-lg text-sm transition">
         Run Path C: SLA Failure (41% &rarr; Void Hold)
       </button>
+      <button onclick="runPact('green_payout', false, 300)" class="border border-slate-500 hover:bg-slate-700 text-slate-200 font-semibold px-4 py-2 rounded-lg text-sm transition">
+        Test guardrail: $300 spend cap
+      </button>
     </div>
   </header>
 
@@ -101,7 +104,7 @@
 
     <!-- Bottom Bryntum-Style SLA & Conditional Invoice Milestone Timeline -->
     <section class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-      <h2 class="text-base font-bold text-white mb-3">3. Programmable SLA Milestone &amp; Conditional Invoice Schedule </h2>
+      <h2 class="text-base font-bold text-white mb-3">3. Pact milestones</h2>
       <div id="timelineBar" class="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs font-mono"></div>
     </section>
   </main>
@@ -215,13 +218,14 @@
       replayRecorded("path_a_capture_payout");
     });
 
-    async function runPact(mode, resume = false) {
+    async function runPact(mode, resume = false, budgetCap = null) {
       const scenarioKey = document.getElementById("scenarioSelect").value;
-      if (!resume) currentRun = { mode, scenarioKey, runId: Date.now().toString(36) };
+      if (!resume) currentRun = { mode, scenarioKey, runId: Date.now().toString(36), budgetCap };
       const form = new FormData();
       form.append("scenario_key", currentRun.scenarioKey);
       form.append("sla_outcome_mode", currentRun.mode);
       form.append("run_id", currentRun.runId);
+      if (currentRun.budgetCap !== null) form.append("override_budget_cap_usd", currentRun.budgetCap);
 
       const res = await fetch("/api/execute-pact", { method: "POST", body: form });
       const data = await res.json();
@@ -313,19 +317,34 @@
       }
 
 
-      const timeline = document.getElementById("timelineBar");
-      timeline.innerHTML = [
-        ["T+00s · Nash Contract", `${data.invoice_id} (-${data.conditional_invoice_rule.discount_percent}% Rule)`],
-        ["T+02s · Mandate & Hold", `Auth ${data.authorization_id}`],
-        ["T+05s · Tracker Oracle", `SLA Score: ${data.sla_verdict.overall_sla_score}%`],
-        ["T+08s · Settlement Gate", data.sla_verdict.epistemic_zone],
-        ["T+11s · Final Ledger", `$${data.financial_summary.final_net_settled_usd.toFixed(2)} Settled`]
-      ].map(([title, sub]) => `
-        <div class="p-3 rounded-lg bg-slate-950 border border-slate-800">
-          <div class="text-sky-400 font-bold">${title}</div>
-          <div class="text-slate-300 mt-1">${sub}</div>
-        </div>
-      `).join("");
+      renderTimeline(data);
+    }
+
+    // Pact milestones, coloured by what actually happened on PayPal.
+    function renderTimeline(data) {
+      const tel = data.paypal_telemetry || [];
+      const zone = (data.sla_verdict || {}).epistemic_zone || "";
+      const zoneCls = zone.startsWith("GREEN") ? "border-emerald-500 text-emerald-300"
+        : zone.startsWith("AMBER") ? "border-amber-500 text-amber-300" : "border-rose-500 text-rose-300";
+      const rule = tel.find(t => t.endpoint.endsWith("/conditional-rules"));
+      const fs = data.financial_summary || {};
+      const settlement = {
+        SETTLED_FULL_SLA_PAYOUT: `Captured $${fs.negotiated_invoice_usd?.toFixed(2)} · 3-way payout`,
+        RESOLVED_VIA_PARTIAL_CURE_COURTROOM: `Dispute resolved · $${fs.partial_cure_refund_usd?.toFixed(2)} refunded · merchant keeps $${fs.final_net_settled_usd?.toFixed(2)}`,
+        VOIDED_SLA_FAILURE_FULL_BUYER_REFUND: `Hold voided · invoice cancelled · $0 taken`,
+      }[data.status] || data.status;
+      const steps = [
+        ["1 · Negotiated", `$${(data.negotiation_turns || []).slice(-1)[0]?.proposed_price_usd.toFixed(2)} · ${data.negotiation_engine || ""}`, "border-sky-500 text-sky-300"],
+        ["2 · Invoiced", `${data.invoice_id} · QR issued${rule && rule.resource_id === "FAILED" ? " · discount rule failed in Sandbox" : ""}`, "border-sky-500 text-sky-300"],
+        ["3 · Funds held", `Authorization ${data.authorization_id} under signed mandate`, "border-sky-500 text-sky-300"],
+        ["4 · SLA scored", `${data.sla_verdict?.overall_sla_score}% · ${zone.split("_")[0]}`, zoneCls],
+        ["5 · Settled", settlement, zoneCls],
+      ];
+      document.getElementById("timelineBar").innerHTML = steps.map(([title, sub, cls]) => `
+        <div class="p-3 rounded-lg bg-slate-950 border-l-4 ${cls}">
+          <div class="font-bold">${esc(title)}</div>
+          <div class="text-slate-300 mt-1 break-words">${esc(sub)}</div>
+        </div>`).join("");
     }
   </script>
 </body>

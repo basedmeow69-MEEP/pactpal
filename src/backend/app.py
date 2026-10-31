@@ -13,7 +13,7 @@ from src.backend.pactpal_engine import PactPalClearinghouseEngine
 
 app = FastAPI(
     title="PactPal - Autonomous Agent-to-Agent Clearinghouse, SLA Escrow & Sandbox Dispute Courtroom",
-    version="1.11.0",
+    version="1.0.0",
 )
 app.add_middleware(
     CORSMiddleware,
@@ -94,20 +94,23 @@ async def list_paypal_agent_toolkit_mcp_tools() -> JSONResponse:
     """Expose @paypal/agent-toolkit v1.11.0 + PactPal Escrow MCP tools for judge inspection."""
     return JSONResponse(
         {
-            "toolkit_version": "@paypal/agent-toolkit v1.11.0 + APIMatic Typed Bindings",
+            "toolkit_version": "PayPal REST APIs called directly; tool names follow @paypal/agent-toolkit where one exists",
             "environment": "SANDBOX (https://api-m.sandbox.paypal.com)",
             "tools": [
-                "create_invoice",
-                "create_conditional_rules_for_invoice",
-                "generate_invoice_qr_code",
-                "create_order",
-                "pay_order",
-                "create_shipment_tracking",
-                "create_batch_payout",
-                "get_dispute",
-                "provide_dispute_evidence",
-                "make_dispute_offer",
-                "accept_dispute_claim",
+                {"name": "create_invoice", "in_paypal_agent_toolkit": True},
+                {"name": "create_conditional_rules_for_invoice", "in_paypal_agent_toolkit": True},
+                {"name": "send_invoice", "in_paypal_agent_toolkit": True},
+                {"name": "generate_invoice_qr_code", "in_paypal_agent_toolkit": True},
+                {"name": "create_order", "in_paypal_agent_toolkit": True},
+                {"name": "get_order", "in_paypal_agent_toolkit": True},
+                {"name": "pay_order", "in_paypal_agent_toolkit": True},
+                {"name": "void_authorization", "in_paypal_agent_toolkit": False},
+                {"name": "cancel_sent_invoice", "in_paypal_agent_toolkit": True},
+                {"name": "create_shipment_tracking", "in_paypal_agent_toolkit": True},
+                {"name": "create_batch_payout", "in_paypal_agent_toolkit": False},
+                {"name": "list_disputes", "in_paypal_agent_toolkit": True},
+                {"name": "get_dispute", "in_paypal_agent_toolkit": True},
+                {"name": "make_dispute_offer", "in_paypal_agent_toolkit": False},
             ],
         }
     )
